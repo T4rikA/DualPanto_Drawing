@@ -58,6 +58,10 @@ public class GameManager : MonoBehaviour
             await IntroduceLevel();
         }*/
 
+        await speechOut.Speak("Feel for yourself. Say yes or done when you're ready.");
+        //string response = await speechIn.Listen(commands);
+        await speechIn.Listen(new Dictionary<string, KeyCode>() { { "yes", KeyCode.Y }, { "done", KeyCode.D } });
+
         await speechOut.Speak("Introduction finished, game starts.");
 
         //await ResetGame();
