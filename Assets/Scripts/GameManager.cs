@@ -18,6 +18,9 @@ public class GameManager : MonoBehaviour
         { "done", KeyCode.D }
     };
     
+    private int levelNumber = 1;
+    public bool introduceLevel = true;
+
     void Awake()
     {
         speechIn = new SpeechIn(onRecognized, commands.Keys.ToArray());
@@ -51,11 +54,11 @@ public class GameManager : MonoBehaviour
         await speechOut.Speak("Welcome to Panto Drawing");
         // TODO: 1. Introduce obstacles in level 2 (aka 1)
         await Task.Delay(1000);
-        /*RegisterColliders();
+        RegisterColliders();
 
-        if (introduceLevel)
+        /*if (introduceLevel)
         {
-            await IntroduceLevel();
+            await IntroduceLevel(levelNumber);
         }*/
 
         await speechOut.Speak("Feel for yourself. Say yes or done when you're ready.");
@@ -65,5 +68,16 @@ public class GameManager : MonoBehaviour
         await speechOut.Speak("Introduction finished, game starts.");
 
         //await ResetGame();
+    }
+
+    
+    void RegisterColliders() {
+        PantoCollider[] colliders = FindObjectsOfType<PantoCollider>();
+        foreach (PantoCollider collider in colliders)
+        {
+            Debug.Log(collider);
+            collider.CreateObstacle();
+            collider.Enable();
+        }
     }
 }
