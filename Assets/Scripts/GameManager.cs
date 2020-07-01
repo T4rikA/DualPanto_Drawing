@@ -41,7 +41,7 @@ public class GameManager : MonoBehaviour
         
     }
 
-    async void onRecognized(string message)
+    void onRecognized(string message)
     {
         Debug.Log("SpeechIn recognized: " + message);
     }
