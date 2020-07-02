@@ -71,7 +71,7 @@ public class LineDraw : MonoBehaviour
         lineRenderer.SetPosition(lineRenderer.positionCount - 1, newFingerPos);
     }
 
-    async void TraceLine(string name)
+    public async void TraceLine(string name)
     {
         LineRenderer line = GameObject.Find(name).GetComponent<LineRenderer>();
         Vector3[] linePos = new Vector3[line.positionCount];

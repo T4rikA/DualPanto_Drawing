@@ -156,9 +156,12 @@ public class GameManager : MonoBehaviour
 
     async void levelOne()
     {
-        await speechOut.Speak("Welcome to level one. Here you can feel the first half of a mouth. Draw the second half.");
-        /*await lineDraw.TraceLine("Mouth");
-        here müssen wir dann also die zweite Hälfte des Mundes malen und auch speichern
+        await speechOut.Speak("Welcome to level one. Here you can feel the first half of a mouth.");
+        lineDraw.TraceLine("Mouth");
+        //WaitForSeconds(6);
+        await speechOut.Speak("Draw the second half.");
+
+        /*here müssen wir dann also die zweite Hälfte des Mundes malen und auch speichern
         lineDraw.CreateLine();*/
         await speechOut.Speak("Say yes or done when you're ready.");
 
