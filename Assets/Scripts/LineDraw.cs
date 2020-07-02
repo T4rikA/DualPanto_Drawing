@@ -8,9 +8,12 @@ public class LineDraw : MonoBehaviour
     public GameObject linePrefab;
     public GameObject currentLine;
 
+    public bool canDraw;
 
     UpperHandle upperHandle;
     LowerHandle lowerHandle;
+
+    private float lowerRotation;
 
     public LineRenderer lineRenderer;
 
@@ -20,17 +23,22 @@ public class LineDraw : MonoBehaviour
     {
         upperHandle = GameObject.Find("Panto").GetComponent<UpperHandle>();
         lowerHandle = GameObject.Find("Panto").GetComponent<LowerHandle>();
+        lowerRotation = lowerHandle.GetRotation();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetMouseButtonDown(0))
+        if(!canDraw)
+            return;
+        Debug.Log(lowerRotation);
+        if(Input.GetMouseButtonDown(0) || Mathf.Abs(lowerRotation - lowerHandle.GetRotation()) > 70)
         {
             CreateLine();
         }
-        
-        if(Input.GetMouseButton(0))
+        lowerRotation = lowerHandle.GetRotation();
+        Debug.Log(lowerRotation);
+        if(Input.GetMouseButton(0) || Mathf.Abs(lowerRotation - lowerHandle.GetRotation()) > 70)
         {
             Vector3 tempFingerPos = upperHandle.HandlePosition(transform.position);
             tempFingerPos.y = .1f;

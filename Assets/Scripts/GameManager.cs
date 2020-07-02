@@ -45,13 +45,12 @@ public class GameManager : MonoBehaviour
     {
         upperHandle = GetComponent<UpperHandle>();
         lowerHandle = GetComponent<LowerHandle>();
-        lineDraw = GameObject.Find("Plane").GetComponent<LineDraw>();
+        lineDraw = GameObject.Find("Panto").GetComponent<LineDraw>();
+        lineDraw.canDraw = false;
         Debug.Log("Before Introduction");
         speechIn.StartListening();
         RegisterColliders();
         Introduction();
-        
-        
     }
 
 
@@ -160,7 +159,7 @@ public class GameManager : MonoBehaviour
         lineDraw.TraceLine("Mouth");
         //WaitForSeconds(6);
         await speechOut.Speak("Draw the second half.");
-
+        lineDraw.canDraw = true;
         /*here müssen wir dann also die zweite Hälfte des Mundes malen und auch speichern
         lineDraw.CreateLine();*/
         await speechOut.Speak("Say yes or done when you're ready.");
