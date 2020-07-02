@@ -14,12 +14,12 @@ public class LineDraw : MonoBehaviour
 
     public LineRenderer lineRenderer;
 
-    public List<Vector2> fingerPositions;
+    public List<Vector3> fingerPositions;
     // Start is called before the first frame update
     void Start()
     {
-        upperHandle = GetComponent<UpperHandle>();
-        lowerHandle = GetComponent<LowerHandle>();
+        upperHandle = GameObject.Find("Panto").GetComponent<UpperHandle>();
+        lowerHandle = GameObject.Find("Panto").GetComponent<LowerHandle>();
     }
 
     // Update is called once per frame
@@ -32,9 +32,12 @@ public class LineDraw : MonoBehaviour
         
         if(Input.GetMouseButton(0))
         {
-            Debug.Log("Input.mousePosition");
-            Vector2 tempFingerPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            if(Vector2.Distance(tempFingerPos, fingerPositions[fingerPositions.Count - 1]) > .1f)
+            Vector3 tempFingerPos = upperHandle.HandlePosition(transform.position);
+            tempFingerPos.y = .1f;
+            //Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector3 latestPos = fingerPositions[fingerPositions.Count - 1];
+            latestPos.y = .1f;
+            if(Vector3.Distance(tempFingerPos, latestPos) > .1f)
             {
                 UpdateLine(tempFingerPos);
             }
@@ -46,16 +49,37 @@ public class LineDraw : MonoBehaviour
         currentLine = Instantiate(linePrefab, Vector3.zero, Quaternion.identity);
         lineRenderer = currentLine.GetComponent<LineRenderer>();
         fingerPositions.Clear();
-        fingerPositions.Add(Camera.main.ScreenToWorldPoint(Input.mousePosition));
-        fingerPositions.Add(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+        Vector3 newPos = upperHandle.HandlePosition(transform.position);
+        Debug.Log(newPos);
+        newPos.y = .1f;
+        fingerPositions.Add(newPos);
+        fingerPositions.Add(newPos);
         lineRenderer.SetPosition(0, fingerPositions[0]);
         lineRenderer.SetPosition(1, fingerPositions[1]);
     }
 
-    void UpdateLine(Vector2 newFingerPos)
+    void CreateCircle(LineRenderer line){
+        //WIP
+        line.loop = true;
+        line.Simplify(1);
+    }
+
+    void UpdateLine(Vector3 newFingerPos)
     {
         fingerPositions.Add(newFingerPos);
         lineRenderer.positionCount++;
         lineRenderer.SetPosition(lineRenderer.positionCount - 1, newFingerPos);
+    }
+
+    async void TraceLine(string name)
+    {
+        LineRenderer line = GameObject.Find(name).GetComponent<LineRenderer>();
+        Vector3[] linePos = new Vector3[line.positionCount];
+        line.GetPositions(linePos);
+        for (int i = 0; i < line.positionCount; i += 2)
+        {
+            await lowerHandle.MoveToPosition(linePos[i], .2f);
+        }
+        Debug.Log(linePos[0]);
     }
 }

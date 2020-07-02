@@ -14,7 +14,7 @@ public class Paintable : MonoBehaviour
 
     public LineRenderer lineRenderer;
 
-    public List<Vector3> fingerPositions;
+    public List<Vector2> fingerPositions;
     // Start is called before the first frame update
     void Start()
     {
