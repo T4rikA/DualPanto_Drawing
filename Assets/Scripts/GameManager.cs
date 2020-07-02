@@ -20,7 +20,11 @@ public class GameManager : MonoBehaviour
     };
     
     private int levelNumber = 1;
-    public bool introduceLevel = true;
+    public bool doLevel = true;
+
+    //public FirstLevel firstLevel; um die level ggf auszulagern in ein eigenes Skript aber das mag grad nciht
+
+    private LineDraw lineDraw;
 
     void Awake()
     {
@@ -40,11 +44,14 @@ public class GameManager : MonoBehaviour
     {
         upperHandle = GetComponent<UpperHandle>();
         lowerHandle = GetComponent<LowerHandle>();
+        lineDraw = GameObject.Find("Plane").GetComponent<LineDraw>();
         Debug.Log("Before Introduction");
         speechIn.StartListening();
         Introduction();
         
+        
     }
+
 
     async void onRecognized(string message)
     {
@@ -86,23 +93,22 @@ public class GameManager : MonoBehaviour
         // TODO: 1. Introduce obstacles in level 2 (aka 1)
         await Task.Delay(1000);
         RegisterColliders();
-
-        /*if (introduceLevel)
-        {
-            await IntroduceLevel(levelNumber);
-        }*/
-
         await speechOut.Speak("Feel for yourself. Say yes or done when you're ready.");
         //string response = await speechIn.Listen(commands);
         await speechIn.Listen(new Dictionary<string, KeyCode>() { { "yes", KeyCode.Y }, { "done", KeyCode.D } });
 
-        await speechOut.Speak("Introduction finished, game starts.");
+        await speechOut.Speak("Introduction finished, start level one.");
 
         //await ResetGame();
+        if (doLevel)
+        {
+            IntroductionThroughLevel();
+        }
     }
 
     
-    void RegisterColliders() {
+    void RegisterColliders()
+    {
         PantoCollider[] colliders = FindObjectsOfType<PantoCollider>();
         foreach (PantoCollider collider in colliders)
         {
@@ -111,4 +117,57 @@ public class GameManager : MonoBehaviour
             collider.Enable();
         }
     }
+
+    void IntroductionThroughLevel()
+    {
+        for(int i = 1; i <= 5; i++ ){
+            switch(i)
+        {
+            case 1:
+                levelOne();
+                break;
+            /*case 2:
+                await levelTwo();
+                levelNumber++;
+                break;
+            case 3:
+                await levelThree();
+                levelNumber++;
+                break;
+            case 4:
+                await levelFour();
+                levelNumber++;
+                break;
+            case 5:
+                await levelFive();
+                levelNumber++;
+                break;*/
+            default:
+                Debug.Log("Defaul level case");
+                break;
+        }
+        }
+        
+    }
+
+    async void levelOne()
+    {
+        await speechOut.Speak("Welcome to level one. Here you can feel the first half of a mouth. Draw the second half.");
+        /*await lineDraw.TraceLine("Mouth");
+        here müssen wir dann also die zweite Hälfte des Mundes malen und auch speichern
+        lineDraw.CreateLine();*/
+        await speechOut.Speak("Say yes or done when you're ready.");
+
+        await speechIn.Listen(new Dictionary<string, KeyCode>() { { "yes", KeyCode.Y }, { "done", KeyCode.D } });
+    }
+
+    /*void async levelTwo(){ return;}
+
+    void async levelThree(){ return; }
+
+    void async levelFour(){return;}
+
+    void async levelFive(){return;}
+
+    void draw(){return;}*/
 }
