@@ -21,6 +21,7 @@ public class GameManager : MonoBehaviour
     
     private int levelNumber = 1;
     public bool doLevel = true;
+    private bool drawing = false;
 
     //public FirstLevel firstLevel; um die level ggf auszulagern in ein eigenes Skript aber das mag grad nciht
 
@@ -47,6 +48,7 @@ public class GameManager : MonoBehaviour
         lineDraw = GameObject.Find("Plane").GetComponent<LineDraw>();
         Debug.Log("Before Introduction");
         speechIn.StartListening();
+        RegisterColliders();
         Introduction();
         
         
@@ -69,6 +71,9 @@ public class GameManager : MonoBehaviour
                 await speechOut.Speak("Thanks for using our application. Closing down now...");
                 OnApplicationQuit();
                 Application.Quit();
+                break;
+            case "done":
+                drawing = false;
                 break;
             /*case "options":
                 string commandlist = "";
@@ -93,9 +98,9 @@ public class GameManager : MonoBehaviour
         // TODO: 1. Introduce obstacles in level 2 (aka 1)
         await Task.Delay(1000);
         RegisterColliders();
-        await speechOut.Speak("Feel for yourself. Say yes or done when you're ready.");
+        await speechOut.Speak("Explore your drawing area. Say yes when you're ready.");
         //string response = await speechIn.Listen(commands);
-        await speechIn.Listen(new Dictionary<string, KeyCode>() { { "yes", KeyCode.Y }, { "done", KeyCode.D } });
+        await speechIn.Listen(new Dictionary<string, KeyCode>() { { "yes", KeyCode.Y }});
 
         await speechOut.Speak("Introduction finished, start level one.");
 
@@ -126,11 +131,10 @@ public class GameManager : MonoBehaviour
             case 1:
                 levelOne();
                 break;
-            /*case 2:
-                await levelTwo();
-                levelNumber++;
+            case 2:
+                levelTwo();
                 break;
-            case 3:
+            /*case 3:
                 await levelThree();
                 levelNumber++;
                 break;
@@ -143,7 +147,7 @@ public class GameManager : MonoBehaviour
                 levelNumber++;
                 break;*/
             default:
-                Debug.Log("Defaul level case");
+                Debug.Log("Default level case");
                 break;
         }
         }
@@ -158,14 +162,33 @@ public class GameManager : MonoBehaviour
         lineDraw.CreateLine();*/
         await speechOut.Speak("Say yes or done when you're ready.");
 
-        await speechIn.Listen(new Dictionary<string, KeyCode>() { { "yes", KeyCode.Y }, { "done", KeyCode.D } });
+        await speechIn.Listen(new Dictionary<string, KeyCode>() { { "yes", KeyCode.Y }});
+        drawing = true;
+        //zeichnen bis drawing = false
     }
 
-    /*void async levelTwo(){ return;}
+    async void levelTwo()
+    {
+        await speechOut.Speak("Here you can feel a human eye.");
+        //lineDraw.TraceLine("Eye");
+        await speechOut.Speak("Draw the second eye now using the voice command circle.");
+        await speechOut.Speak("Say yes or done when you're ready.");
+        drawing = true;
+        //zeichnen bis drawing = false
+    }
 
-    void async levelThree(){ return; }
+    async void levelThree()
+    {
+        await speechOut.Speak("Using the voice command 'show' you can find other drawn objects. Use the command 'show eyes' and 'show mouth'.");
 
-    void async levelFour(){return;}
+        await speechOut.Speak("Draw a nose in the right spot. Turn the it-Handle to start you drawing. Name it also. Doing so you can create subdrawings.");   
+        
+        await speechOut.Speak("Say yes or done when you're ready.");
+        drawing = true;
+        //zeichnen bis drawing = false
+    }
+
+    /*void async levelFour(){return;}
 
     void async levelFive(){return;}
 
