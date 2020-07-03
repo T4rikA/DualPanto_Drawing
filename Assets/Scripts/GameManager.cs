@@ -75,7 +75,7 @@ namespace PantoDrawing
                     Application.Quit();
                     break;
                 case "done":
-                    drawing = false;
+                    lineDraw.canDraw = false;
                     break;
                 /*case "options":
                     string commandlist = "";
@@ -125,20 +125,44 @@ namespace PantoDrawing
             }
         }
 
-        void IntroductionThroughLevel()
+        async void IntroductionThroughLevel()
         {
             for(int i = 1; i <= 5; i++ ){
                 switch(i)
             {
                 case 1:
-                    levelOne();
+                    lineDraw.TraceLine("Mouth");
+                    await speechOut.Speak("Here you can feel the first half of a mouth.");
+                    lineDraw.FindStartingPoint("Mouth");
+                    await speechOut.Speak("Draw the second half. Turn the lower Handle to start drawing.");
+                    lineDraw.canDraw = true;
+                    await speechOut.Speak("Say yes when you're ready.");
+                    await speechIn.Listen(new Dictionary<string, KeyCode>() { { "yes", KeyCode.Y }});
+                    lineDraw.canDraw = false;
+                    GameObject secondMouth = GameObject.Find("Line(Clone)");
+                    secondMouth.name = "Mouth2";
                     break;
+
                 case 2:
-                    levelTwo();
+                    lineDraw.TraceLine("Eye");
+                    await speechOut.Speak("Here you can feel a human eye.");
+                    await speechOut.Speak("Draw the second eye now using the voice command circle.");
+                    lineDraw.canDraw = true;
+                    await speechOut.Speak("Say yes when you're ready.");
+                    await speechIn.Listen(new Dictionary<string, KeyCode>() { { "yes", KeyCode.Y }});
+                    lineDraw.canDraw = false;
+                    GameObject secondEye = GameObject.Find("Line(Clone)");
+                    secondMouth.name = "Eye2";
                     break;
                 /*case 3:
-                    await levelThree();
-                    levelNumber++;
+                    await speechOut.Speak("Using the voice command 'show' you can find other drawn objects. Use the command 'show eyes' and 'show mouth'.");
+                    await lineDraw.TraceLine("Mouth");
+                    await lineDraw.TraceLine("Mouth2");
+                    await lineDraw.TraceLine("Eye");
+                    await lineDraw.TraceLine("Eye2");
+                    await speechOut.Speak("Draw a nose in the right spot. Turn the it-Handle to start you drawing. Name it also. Doing so you can create subdrawings.");   
+                    await speechOut.Speak("Say yes or done when you're ready.");
+                    lineDraw.canDraw = true;
                     break;
                 case 4:
                     await levelFour();
@@ -156,31 +180,7 @@ namespace PantoDrawing
             
         }
 
-        async void levelOne()
-        {
-            await speechOut.Speak("Welcome to level one. Here you can feel the first half of a mouth.");
-            lineDraw.TraceLine("Mouth");
-            //WaitForSeconds(6);
-            await speechOut.Speak("Draw the second half.");
-            lineDraw.canDraw = true;
-            /*here müssen wir dann also die zweite Hälfte des Mundes malen und auch speichern
-            lineDraw.CreateLine();*/
-            await speechOut.Speak("Say yes or done when you're ready.");
-
-            await speechIn.Listen(new Dictionary<string, KeyCode>() { { "yes", KeyCode.Y }});
-            drawing = true;
-            //zeichnen bis drawing = false
-        }
-
-        async void levelTwo()
-        {
-            await speechOut.Speak("Here you can feel a human eye.");
-            //lineDraw.TraceLine("Eye");
-            await speechOut.Speak("Draw the second eye now using the voice command circle.");
-            await speechOut.Speak("Say yes or done when you're ready.");
-            drawing = true;
-            //zeichnen bis drawing = false
-        }
+        
 
         async void levelThree()
         {

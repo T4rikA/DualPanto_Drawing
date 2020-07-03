@@ -88,9 +88,17 @@ namespace PantoDrawing
             line.GetPositions(linePos);
             for (int i = 0; i < line.positionCount; i += 2)
             {
-                await lowerHandle.MoveToPosition(linePos[i], .2f);
+                await lowerHandle.MoveToPosition(linePos[i], .1f);
             }
             Debug.Log(linePos[0]);
+        }
+
+        public async void FindStartingPoint(string name)
+        {
+            LineRenderer line = GameObject.Find(name).GetComponent<LineRenderer>();
+            Vector3[] linePos = new Vector3[line.positionCount];
+            line.GetPositions(linePos);
+            await upperHandle.MoveToPosition(linePos[0], .2f);
         }
     }
 }
