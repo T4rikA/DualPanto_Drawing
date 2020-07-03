@@ -100,5 +100,28 @@ namespace PantoDrawing
             line.GetPositions(linePos);
             await upperHandle.MoveToPosition(linePos[0], .2f);
         }
+
+        public void CombineLines(string name, string addedObject, bool inverted = false)
+        {        
+            LineRenderer lineTwo = GameObject.Find(addedObject).GetComponent<LineRenderer>();
+            Vector3[] lineTwoPos = new Vector3[lineTwo.positionCount];
+            lineTwo.GetPositions(lineTwoPos);
+
+            LineRenderer lineOne = GameObject.Find(name).GetComponent<LineRenderer>();
+
+            if (!inverted){
+               for(int i = 0; i < lineTwo.positionCount; i++){
+                lineOne.positionCount++;
+                lineOne.SetPosition(lineOne.positionCount - 1, lineTwoPos[i]);
+                } 
+            } else {
+                for(int i = lineTwo.positionCount-1; i >= 0; i--){
+                lineOne.positionCount++;
+                lineOne.SetPosition(lineOne.positionCount - 1, lineTwoPos[i]);
+                } 
+            }
+            
+            
+        }
     }
 }

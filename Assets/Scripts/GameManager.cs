@@ -22,9 +22,7 @@ namespace PantoDrawing
             { "add", KeyCode.A }
         };
         
-        private int levelNumber = 1;
         public bool doLevel = true;
-        private bool drawing = false;
 
         //public FirstLevel firstLevel; um die level ggf auszulagern in ein eigenes Skript aber das mag grad nciht
 
@@ -141,6 +139,8 @@ namespace PantoDrawing
                     lineDraw.canDraw = false;
                     GameObject secondMouth = GameObject.Find("Line(Clone)");
                     secondMouth.name = "Mouth2";
+                    lineDraw.CombineLines("Mouth", "Mouth2", true); //they will be both one line in "Mouth", invert the second line
+                    lineDraw.TraceLine("Mouth");
                     break;
 
                 case 2:
@@ -152,12 +152,11 @@ namespace PantoDrawing
                     await speechIn.Listen(new Dictionary<string, KeyCode>() { { "yes", KeyCode.Y }});
                     lineDraw.canDraw = false;
                     GameObject secondEye = GameObject.Find("Line(Clone)");
-                    secondMouth.name = "Eye2";
+                    secondEye.name = "Eye2";
                     break;
                 /*case 3:
                     await speechOut.Speak("Using the voice command 'show' you can find other drawn objects. Use the command 'show eyes' and 'show mouth'.");
                     await lineDraw.TraceLine("Mouth");
-                    await lineDraw.TraceLine("Mouth2");
                     await lineDraw.TraceLine("Eye");
                     await lineDraw.TraceLine("Eye2");
                     await speechOut.Speak("Draw a nose in the right spot. Turn the it-Handle to start you drawing. Name it also. Doing so you can create subdrawings.");   
@@ -189,7 +188,7 @@ namespace PantoDrawing
             await speechOut.Speak("Draw a nose in the right spot. Turn the it-Handle to start you drawing. Name it also. Doing so you can create subdrawings.");   
             
             await speechOut.Speak("Say yes or done when you're ready.");
-            drawing = true;
+            
             //zeichnen bis drawing = false
         }
 }
