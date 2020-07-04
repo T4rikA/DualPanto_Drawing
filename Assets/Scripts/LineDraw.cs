@@ -15,9 +15,9 @@ namespace PantoDrawing
         UpperHandle upperHandle;
         LowerHandle lowerHandle;
 
-        float lowerRotation;
+        float upperRotation;
         float angle;
-        int i = 0;
+        public int lineCount = 0;
         //currently adding points to a line
         bool drawing = false;
         bool mouse = false;
@@ -26,7 +26,7 @@ namespace PantoDrawing
 
         public List<Vector3> fingerPositions;
 
-        //Dictonary to store all lines e.g. eye -> contains a list of lines user named eye
+        //Dictonary to store all lines e.g. eye -> contains line user named eye
         public Dictionary<string, LineRenderer> lines = new Dictionary<string, LineRenderer>();
 
         // Start is called before the first frame update
@@ -34,7 +34,7 @@ namespace PantoDrawing
         {
             upperHandle = GameObject.Find("Panto").GetComponent<UpperHandle>();
             lowerHandle = GameObject.Find("Panto").GetComponent<LowerHandle>();
-            lowerRotation = lowerHandle.GetRotation();
+            upperRotation = lowerHandle.GetRotation();
         }
 
         // Update is called once per frame
@@ -42,19 +42,16 @@ namespace PantoDrawing
         {
             if(!canDraw)
                 return;
-            angle = lowerHandle.GetRotation() - lowerRotation;
+            angle = upperHandle.GetRotation() - upperRotation;
             angle = Mathf.Abs((angle + 180) % 360 - 180);
             if((angle > 80f  && !mouse && !drawing) || (Input.GetMouseButtonDown(0) && mouse)) 
             {
-                lowerRotation = lowerHandle.GetRotation();
-                angle = lowerHandle.GetRotation() - lowerRotation;
+                upperRotation = upperHandle.GetRotation();
+                angle = upperHandle.GetRotation() - upperRotation;
                 angle = Mathf.Abs((angle + 180) % 360 - 180);
                 CreateLine();
                 drawing = true;
             }
-            Debug.Log(angle);
-            Debug.Log(!mouse);
-            Debug.Log(drawing);
             if((angle < 30f && !mouse && drawing) || (Input.GetMouseButton(0) && mouse)){
                 Vector3 tempFingerPos = upperHandle.HandlePosition(transform.position);
                 tempFingerPos.y = .1f;
@@ -67,9 +64,9 @@ namespace PantoDrawing
             }else{
                 if(drawing)
                 {
-                    lines.Add("line"+i, lineRenderer);
-                    lineRenderer.name = "line"+i;
-                    i++;
+                    lines.Add("line"+lineCount, lineRenderer);
+                    lineRenderer.name = "line"+lineCount;
+                    lineCount++;
                     drawing = false;
                 }
             }
@@ -90,9 +87,8 @@ namespace PantoDrawing
         }
 
 
-        public void DrawCircle(string name) {
+        public void DrawCircle() {
             LineRenderer line = CreateLine();
-            line.name = name;
         }
 
         void CreateCircle(LineRenderer line){

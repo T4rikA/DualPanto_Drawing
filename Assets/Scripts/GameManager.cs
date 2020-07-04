@@ -23,7 +23,7 @@ namespace PantoDrawing
         };
         
         public bool doLevel = true;
-        public bool debug = true;
+        public bool debugTest = false;
 
         //public FirstLevel firstLevel; um die level ggf auszulagern in ein eigenes Skript aber das mag grad nciht
 
@@ -52,8 +52,9 @@ namespace PantoDrawing
             Debug.Log("Before Introduction");
             speechIn.StartListening();
             RegisterColliders();
-            if(!debug)
+            if(!debugTest)
             {
+                Debug.Log(debugTest);
                 Introduction();
             } else
             {
@@ -72,7 +73,6 @@ namespace PantoDrawing
                     string name = "eye1";
                     //await speechIn.Listen();
                     lineDraw.canDraw = false;
-                    lineDraw.DrawCircle(name);
                     break;
                 case "repeat":
                     await speechOut.Repeat();
@@ -147,7 +147,7 @@ namespace PantoDrawing
                     await speechOut.Speak("Say yes when you're ready.");
                     await speechIn.Listen(new Dictionary<string, KeyCode>() { { "yes", KeyCode.Y }});
                     lineDraw.canDraw = false;
-                    GameObject secondMouth = GameObject.Find("Line(Clone)");
+                    LineRenderer secondMouth = lineDraw.lines["line"+(lineDraw.lineCount-1)];
                     secondMouth.name = "Mouth2";
                     lineDraw.CombineLines("Mouth", "Mouth2", true); //they will be both one line in "Mouth", invert the second line
                     lineDraw.TraceLine("Mouth");
@@ -161,7 +161,7 @@ namespace PantoDrawing
                     await speechOut.Speak("Say yes when you're ready.");
                     await speechIn.Listen(new Dictionary<string, KeyCode>() { { "yes", KeyCode.Y }});
                     lineDraw.canDraw = false;
-                    GameObject secondEye = GameObject.Find("Line(Clone)");
+                    LineRenderer secondEye = lineDraw.lines["line"+(lineDraw.lineCount-1)];
                     secondEye.name = "Eye2";
                     break;
                 /*case 3:
