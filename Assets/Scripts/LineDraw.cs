@@ -17,8 +17,9 @@ namespace PantoDrawing
 
         float lowerRotation;
         float angle;
+        int i = 0;
         //currently adding points to a line
-        bool drawing;
+        bool drawing = false;
         bool mouse = false;
 
         public LineRenderer lineRenderer;
@@ -26,7 +27,7 @@ namespace PantoDrawing
         public List<Vector3> fingerPositions;
 
         //Dictonary to store all lines e.g. eye -> contains a list of lines user named eye
-        public Dictionary<string, List<LineRenderer>> lines = new Dictionary<string, List<LineRenderer>>();
+        public Dictionary<string, LineRenderer> lines = new Dictionary<string, LineRenderer>();
 
         // Start is called before the first frame update
         void Start()
@@ -64,7 +65,13 @@ namespace PantoDrawing
                     UpdateLine(lineRenderer, tempFingerPos);
                 }
             }else{
-                drawing = false;
+                if(drawing)
+                {
+                    lines.Add("line"+i, lineRenderer);
+                    lineRenderer.name = "line"+i;
+                    i++;
+                    drawing = false;
+                }
             }
         }
 
