@@ -19,10 +19,11 @@ namespace PantoDrawing
             //{ "yes", KeyCode.Y },
             { "no", KeyCode.N },
             //{ "done", KeyCode.D },
-            { "add", KeyCode.A }
+            { "circle", KeyCode.C }
         };
         
         public bool doLevel = true;
+        public bool debug = true;
 
         //public FirstLevel firstLevel; um die level ggf auszulagern in ein eigenes Skript aber das mag grad nciht
 
@@ -51,7 +52,13 @@ namespace PantoDrawing
             Debug.Log("Before Introduction");
             speechIn.StartListening();
             RegisterColliders();
-            Introduction();
+            if(!debug)
+            {
+                Introduction();
+            } else
+            {
+                lineDraw.canDraw = true;
+            }
         }
 
 
@@ -60,9 +67,12 @@ namespace PantoDrawing
             //WIP
             switch (message)
             {
-                case "add":
-                    string name;
-                    //name = await speechIn.Listen();
+                case "circle":
+                    Debug.Log("circle");
+                    string name = "eye1";
+                    //await speechIn.Listen();
+                    lineDraw.canDraw = false;
+                    lineDraw.DrawCircle(name);
                     break;
                 case "repeat":
                     await speechOut.Repeat();
@@ -117,7 +127,7 @@ namespace PantoDrawing
             PantoCollider[] colliders = FindObjectsOfType<PantoCollider>();
             foreach (PantoCollider collider in colliders)
             {
-                Debug.Log(collider);
+                //Debug.Log(collider);
                 collider.CreateObstacle();
                 collider.Enable();
             }
