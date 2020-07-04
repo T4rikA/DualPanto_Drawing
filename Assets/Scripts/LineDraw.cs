@@ -16,10 +16,10 @@ namespace PantoDrawing
         LowerHandle lowerHandle;
 
         float lowerRotation;
-
+        float angle;
         //currently adding points to a line
         bool drawing;
-        public bool mouse = false;
+        bool mouse = false;
 
         public LineRenderer lineRenderer;
 
@@ -41,13 +41,20 @@ namespace PantoDrawing
         {
             if(!canDraw)
                 return;
-            if(Mathf.Abs(lowerRotation - lowerHandle.GetRotation()) > 180 && !mouse || Input.GetMouseButtonDown(0) && mouse) 
+            angle = lowerHandle.GetRotation() - lowerRotation;
+            angle = Mathf.Abs((angle + 180) % 360 - 180);
+            if((angle > 80f  && !mouse && !drawing) || (Input.GetMouseButtonDown(0) && mouse)) 
             {
                 lowerRotation = lowerHandle.GetRotation();
+                angle = lowerHandle.GetRotation() - lowerRotation;
+                angle = Mathf.Abs((angle + 180) % 360 - 180);
                 CreateLine();
                 drawing = true;
             }
-            if(drawing && Mathf.Abs(lowerRotation - lowerHandle.GetRotation()) < 20 && !mouse || Input.GetMouseButton(0) && mouse){
+            Debug.Log(angle);
+            Debug.Log(!mouse);
+            Debug.Log(drawing);
+            if((angle < 30f && !mouse && drawing) || (Input.GetMouseButton(0) && mouse)){
                 Vector3 tempFingerPos = upperHandle.HandlePosition(transform.position);
                 tempFingerPos.y = .1f;
                 Vector3 latestPos = fingerPositions[fingerPositions.Count - 1];
@@ -72,7 +79,6 @@ namespace PantoDrawing
             fingerPositions.Add(newPos);
             lineRenderer.SetPosition(0, fingerPositions[0]);
             lineRenderer.SetPosition(1, fingerPositions[1]);
-            lowerRotation = lowerHandle.GetRotation();
             return lineRenderer;
         }
 
