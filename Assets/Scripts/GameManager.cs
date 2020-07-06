@@ -4,7 +4,7 @@ using UnityEngine;
 using System.Threading.Tasks;
 using SpeechIO;
 using System.Linq;
-
+using UnityEngine.SceneManagement;
 
 namespace PantoDrawing
 {
@@ -15,10 +15,11 @@ namespace PantoDrawing
         LowerHandle lowerHandle;
         private SpeechIn speechIn;
         private SpeechOut speechOut;
+        int level = 1;
+
         Dictionary<string, KeyCode> commands = new Dictionary<string, KeyCode>() {
-            //{ "yes", KeyCode.Y },
             { "no", KeyCode.N },
-            //{ "done", KeyCode.D },
+            { "done", KeyCode.D },
             { "circle", KeyCode.C }
         };
         
@@ -54,8 +55,7 @@ namespace PantoDrawing
             RegisterColliders();
             if(!debugTest)
             {
-                Debug.Log(debugTest);
-                Introduction();
+                Levels();
             } else
             {
                 lineDraw.canDraw = true;
@@ -70,7 +70,6 @@ namespace PantoDrawing
             {
                 case "circle":
                     Debug.Log("circle");
-                    string name = "eye1";
                     //await speechIn.Listen();
                     lineDraw.canDraw = false;
                     break;
@@ -102,25 +101,6 @@ namespace PantoDrawing
             speechIn.StopListening();
         }
 
-        async void Introduction()
-        {
-            await speechOut.Speak("Welcome to Panto Drawing");
-            // TODO: 1. Introduce obstacles in level 2 (aka 1)
-            await Task.Delay(1000);
-            RegisterColliders();
-            await speechOut.Speak("Explore your drawing area. Say yes when you're ready.");
-            //string response = await speechIn.Listen(commands);
-            await speechIn.Listen(new Dictionary<string, KeyCode>() { { "yes", KeyCode.Y }});
-
-            await speechOut.Speak("Introduction finished, start level one.");
-
-            //await ResetGame();
-            if (doLevel)
-            {
-                IntroductionThroughLevel();
-            }
-        }
-
         
         void RegisterColliders()
         {
@@ -133,26 +113,15 @@ namespace PantoDrawing
             }
         }
 
-        async void IntroductionThroughLevel()
+        async void Levels()
         {
-            for(int i = 1; i <= 5; i++ ){
-                switch(i)
+            switch(level)
             {
                 case 1:
-                    lineDraw.TraceLine("Mouth");
-                    await speechOut.Speak("Here you can feel the first half of a mouth.");
-                    lineDraw.FindStartingPoint("Mouth");
-                    await speechOut.Speak("Draw the second half. Turn the lower Handle to start drawing.");
-                    lineDraw.canDraw = true;
-                    await speechOut.Speak("Say yes when you're ready.");
-                    await speechIn.Listen(new Dictionary<string, KeyCode>() { { "yes", KeyCode.Y }});
-                    lineDraw.canDraw = false;
-                    LineRenderer secondMouth = lineDraw.lines["line"+(lineDraw.lineCount-1)];
-                    secondMouth.name = "Mouth2";
-                    lineDraw.CombineLines("Mouth", "Mouth2", true); //they will be both one line in "Mouth", invert the second line
-                    lineDraw.TraceLine("Mouth");
+                    Level1 level1 = new Level1();
+                    await level1.StartLevel(lineDraw, speechIn, speechOut);
+                    LevelCompleted();
                     break;
-
                 case 2:
                     lineDraw.TraceLine("Eye");
                     await speechOut.Speak("Here you can feel a human eye.");
@@ -185,11 +154,20 @@ namespace PantoDrawing
                     Debug.Log("Default level case");
                     break;
             }
-            }
-            
         }
 
-        
+        public async void LevelCompleted()
+        {
+            await speechOut.Speak("You completed the level");
+            level++;
+            LoadScene((SceneManager.GetActiveScene().buildIndex + 1) % (SceneManager.sceneCountInBuildSettings));
+        }
+
+        public void LoadScene(int index)
+        {
+            Debug.Log("Load scene with index: "+index);
+            SceneManager.LoadScene(index);
+        }
 
         async void levelThree()
         {
@@ -200,6 +178,23 @@ namespace PantoDrawing
             await speechOut.Speak("Say yes or done when you're ready.");
             
             //zeichnen bis drawing = false
+        }
+
+        void     ResetGame()
+        {
+            level = 0;
+            LoadScene(level);
+        }
+
+        public void RestartLevel()
+        {
+            LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
+
+        async Task GameOver()
+        {
+            await speechOut.Speak("Thanks for using PantoDraw.");
+            Application.Quit();
         }
 }
     /*void async levelFour(){return;}
