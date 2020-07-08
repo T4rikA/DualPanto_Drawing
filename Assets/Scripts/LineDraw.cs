@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DualPantoFramework;
+using System.Threading.Tasks;
 
 namespace PantoDrawing
 {
@@ -20,7 +22,7 @@ namespace PantoDrawing
         public int lineCount = 0;
         //currently adding points to a line
         bool drawing = false;
-        bool mouse = false;
+        bool mouse = true;
 
         public LineRenderer lineRenderer;
 
@@ -86,15 +88,54 @@ namespace PantoDrawing
             return lineRenderer;
         }
 
-
-        public void DrawCircle() {
-            LineRenderer line = CreateLine();
+        public void CreateCircle(){
+            LineRenderer line = lines["line"+(lineCount-1)];
+            Vector3 center = GetCircleCenter(line);
+            Vector3 radius = GetCircleRadius(line, center);
+            CreateCirclePoints(line, center, (radius.x + radius.z) / 2);
         }
 
-        void CreateCircle(LineRenderer line){
-            //WIP
-            line.loop = true;
-            line.Simplify(2);
+        void CreateCirclePoints (LineRenderer line, Vector3 center, float radius)
+        {
+            float x;
+            float y = .1f;
+            float z;
+        
+            float angle = 20f;
+        
+            for (int i = 0; i < line.positionCount; i++)
+            {
+                x = Mathf.Sin (Mathf.Deg2Rad * angle) * radius;
+                z = Mathf.Cos (Mathf.Deg2Rad * angle) * radius;
+
+                line.SetPosition (i,new Vector3(x+center.x,y,z+center.z));
+                    
+                angle += (360f / line.positionCount);
+            }
+        }
+
+        Vector3 GetCircleCenter(LineRenderer line)
+        {
+            float sumX = 0, sumZ = 0;
+            Vector3[] linePos = new Vector3[line.positionCount];
+            line.GetPositions(linePos);
+            for (int i = 0; i < line.positionCount; i++){
+                sumX += linePos[i].x;
+                sumZ += linePos[i].z;
+            }
+            return new Vector3(sumX/line.positionCount, .1f, sumZ/line.positionCount);
+        }
+
+        Vector3 GetCircleRadius(LineRenderer line, Vector3 center)
+        {
+            float sumX = 0, sumZ = 0;
+            Vector3[] linePos = new Vector3[line.positionCount];
+            line.GetPositions(linePos);
+            for (int i = 0; i < line.positionCount; i++){
+                sumX += Mathf.Abs(linePos[i].x-center.x);
+                sumZ += Mathf.Abs(linePos[i].z-center.z);
+            }
+            return new Vector3(sumX/line.positionCount, .1f, sumZ/line.positionCount);
         }
 
         void UpdateLine(LineRenderer line, Vector3 newFingerPos)
@@ -104,9 +145,8 @@ namespace PantoDrawing
             line.SetPosition(line.positionCount - 1, newFingerPos);
         }
 
-        public async void TraceLine(string name)
+        public async Task TraceLine(LineRenderer line)
         {
-            LineRenderer line = GameObject.Find(name).GetComponent<LineRenderer>();
             Vector3[] linePos = new Vector3[line.positionCount];
             line.GetPositions(linePos);
             for (int i = 0; i < line.positionCount; i += 2)
@@ -122,6 +162,13 @@ namespace PantoDrawing
             Vector3[] linePos = new Vector3[line.positionCount];
             line.GetPositions(linePos);
             await upperHandle.MoveToPosition(linePos[0], .2f);
+        }
+
+        public async Task ShowLines(){
+            foreach (KeyValuePair<string, LineRenderer> line in lines)
+            {
+                await TraceLine(line.Value);
+            }
         }
 
         public void CombineLines(string name, string addedObject, bool inverted = false)

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using SpeechIO;
 using System.Linq;
 using UnityEngine.SceneManagement;
+using DualPantoFramework;
 
 namespace PantoDrawing
 {
@@ -24,7 +25,7 @@ namespace PantoDrawing
         };
         
         public bool doLevel = true;
-        public bool debugTest = false;
+        public bool testing = false;
 
         //public FirstLevel firstLevel; um die level ggf auszulagern in ein eigenes Skript aber das mag grad nciht
 
@@ -53,11 +54,14 @@ namespace PantoDrawing
             Debug.Log("Before Introduction");
             speechIn.StartListening();
             RegisterColliders();
-            if(!debugTest)
+            Debug.Log(testing);
+            if(!testing)
             {
                 Levels();
             } else
             {
+                Debug.Log("reload");
+                LoadScene(0);
                 lineDraw.canDraw = true;
             }
         }
@@ -70,8 +74,11 @@ namespace PantoDrawing
             {
                 case "circle":
                     Debug.Log("circle");
-                    //await speechIn.Listen();
-                    lineDraw.canDraw = false;
+                    lineDraw.CreateCircle();
+                    break;
+                case "show":
+                    Debug.Log("show");
+                    await lineDraw.ShowLines();
                     break;
                 case "repeat":
                     await speechOut.Repeat();
@@ -123,15 +130,9 @@ namespace PantoDrawing
                     LevelCompleted();
                     break;
                 case 2:
-                    lineDraw.TraceLine("Eye");
-                    await speechOut.Speak("Here you can feel a human eye.");
-                    await speechOut.Speak("Draw the second eye now using the voice command circle.");
-                    lineDraw.canDraw = true;
-                    await speechOut.Speak("Say yes when you're ready.");
-                    await speechIn.Listen(new Dictionary<string, KeyCode>() { { "yes", KeyCode.Y }});
-                    lineDraw.canDraw = false;
-                    LineRenderer secondEye = lineDraw.lines["line"+(lineDraw.lineCount-1)];
-                    secondEye.name = "Eye2";
+                    Level2 level2 = new Level2();
+                    await level2.StartLevel(lineDraw, speechIn, speechOut);
+                    LevelCompleted();
                     break;
                 /*case 3:
                     await speechOut.Speak("Using the voice command 'show' you can find other drawn objects. Use the command 'show eyes' and 'show mouth'.");
@@ -160,7 +161,7 @@ namespace PantoDrawing
         {
             await speechOut.Speak("You completed the level");
             level++;
-            LoadScene((SceneManager.GetActiveScene().buildIndex + 1) % (SceneManager.sceneCountInBuildSettings));
+            LoadScene(level % (SceneManager.sceneCountInBuildSettings));
         }
 
         public void LoadScene(int index)
@@ -180,7 +181,7 @@ namespace PantoDrawing
             //zeichnen bis drawing = false
         }
 
-        void     ResetGame()
+        void ResetGame()
         {
             level = 0;
             LoadScene(level);
