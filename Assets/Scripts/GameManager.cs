@@ -35,7 +35,7 @@ namespace PantoDrawing
         {
             speechIn = new SpeechIn(onRecognized, commands.Keys.ToArray());
             speechOut = new SpeechOut();
-
+            DontDestroyOnLoad(GameObject.Find("Panto"));
             /*if (level < 0 || level >= enemyConfigs.Length)
             {
                 Debug.LogWarning($"Level value {level} < 0 or >= enemyConfigs.Length. Resetting to 0");
