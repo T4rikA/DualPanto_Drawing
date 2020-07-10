@@ -18,7 +18,7 @@ namespace PantoDrawing
             LineRenderer mouth = GameObject.Find("Mouth").GetComponent<LineRenderer>();
             lineDraw.TraceLine(mouth);
             await speechOut.Speak("Here you can feel the first half of a mouth.");
-            lineDraw.FindStartingPoint("Mouth");
+            lineDraw.FindStartingPoint(mouth);
             await speechOut.Speak("Draw the second half. Turn the lower Handle to start drawing.");
             lineDraw.canDraw = true;
             await speechOut.Speak("Say yes when you're ready.");
@@ -26,7 +26,7 @@ namespace PantoDrawing
             lineDraw.canDraw = false;
             LineRenderer secondMouth = lineDraw.lines["line"+(lineDraw.lineCount-1)];
             secondMouth.name = "Mouth2";
-            lineDraw.CombineLines("Mouth", "Mouth2", true); //they will be both one line in "Mouth", invert the second line
+            lineDraw.CombineLines(mouth, secondMouth, true); //they will be both one line in "Mouth", invert the second line
             await lineDraw.TraceLine(mouth);
         }
     }

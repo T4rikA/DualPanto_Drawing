@@ -158,12 +158,11 @@ namespace PantoDrawing
             Debug.Log(linePos[0]);
         }
 
-        public async void FindStartingPoint(string name)
+        public async void FindStartingPoint(LineRenderer line)
         {
-            LineRenderer line = GameObject.Find(name).GetComponent<LineRenderer>();
             Vector3[] linePos = new Vector3[line.positionCount];
             line.GetPositions(linePos);
-            await upperHandle.MoveToPosition(linePos[0], .2f);
+            await lowerHandle.MoveToPosition(linePos[0], .2f);
         }
 
         public async Task ShowLines(){
@@ -173,27 +172,22 @@ namespace PantoDrawing
             }
         }
 
-        public void CombineLines(string name, string addedObject, bool inverted = false)
-        {        
-            LineRenderer lineTwo = GameObject.Find(addedObject).GetComponent<LineRenderer>();
-            Vector3[] lineTwoPos = new Vector3[lineTwo.positionCount];
-            lineTwo.GetPositions(lineTwoPos);
-
-            LineRenderer lineOne = GameObject.Find(name).GetComponent<LineRenderer>();
+        public void CombineLines(LineRenderer line1, LineRenderer line2, bool inverted = false)
+        {
+            Vector3[] line2Pos = new Vector3[line2.positionCount];
+            line2.GetPositions(line2Pos);
 
             if (!inverted){
-               for(int i = 0; i < lineTwo.positionCount; i++){
-                lineOne.positionCount++;
-                lineOne.SetPosition(lineOne.positionCount - 1, lineTwoPos[i]);
+               for(int i = 0; i < line2.positionCount; i++){
+                line1.positionCount++;
+                line1.SetPosition(line1.positionCount - 1, line2Pos[i]);
                 } 
             } else {
-                for(int i = lineTwo.positionCount-1; i >= 0; i--){
-                lineOne.positionCount++;
-                lineOne.SetPosition(lineOne.positionCount - 1, lineTwoPos[i]);
+                for(int i = line2.positionCount-1; i >= 0; i--){
+                line1.positionCount++;
+                line1.SetPosition(line1.positionCount - 1, line2Pos[i]);
                 } 
             }
-            
-            
         }
     }
 }

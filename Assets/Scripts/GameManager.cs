@@ -26,7 +26,7 @@ namespace PantoDrawing
         };
         
         public bool doLevel = true;
-        public bool testing = false;
+        public bool testing = true;
 
         //public FirstLevel firstLevel; um die level ggf auszulagern in ein eigenes Skript aber das mag grad nciht
 
@@ -135,22 +135,16 @@ namespace PantoDrawing
                     await level3.StartLevel(lineDraw, speechIn, speechOut);
                     LevelCompleted();
                     break;
-                    /*await speechOut.Speak("Using the voice command 'show' you can find other drawn objects. Use the command 'show eyes' and 'show mouth'.");
-                    await lineDraw.TraceLine("Mouth");
-                    await lineDraw.TraceLine("Eye");
-                    await lineDraw.TraceLine("Eye2");
-                    await speechOut.Speak("Draw a nose in the right spot. Turn the it-Handle to start you drawing. Name it also. Doing so you can create subdrawings.");   
-                    await speechOut.Speak("Say yes or done when you're ready.");
-                    lineDraw.canDraw = true;
-                    break;
                 case 4:
-                    await levelFour();
-                    levelNumber++;
+                    Level4 level4 = new Level4();
+                    await level4.StartLevel(lineDraw, speechIn, speechOut);
+                    LevelCompleted();
                     break;
                 case 5:
-                    await levelFive();
-                    levelNumber++;
-                    break;*/
+                    Level5 level5 = new Level5();
+                    await level5.StartLevel(lineDraw, speechIn, speechOut);
+                    LevelCompleted();
+                    break;
                 default:
                     Debug.Log("Default level case");
                     break;
