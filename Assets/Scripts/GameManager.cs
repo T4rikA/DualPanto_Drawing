@@ -36,6 +36,11 @@ namespace PantoDrawing
             speechIn = new SpeechIn(onRecognized, commands.Keys.ToArray());
             speechOut = new SpeechOut();
             DontDestroyOnLoad(GameObject.Find("Panto"));
+            DontDestroyOnLoad(GameObject.Find("Upper"));
+            DontDestroyOnLoad(GameObject.Find("Lower"));
+            DontDestroyOnLoad(GetComponent<UpperHandle>());
+            DontDestroyOnLoad(GetComponent<UpperHandle>());
+            
             /*if (level < 0 || level >= enemyConfigs.Length)
             {
                 Debug.LogWarning($"Level value {level} < 0 or >= enemyConfigs.Length. Resetting to 0");
@@ -134,8 +139,12 @@ namespace PantoDrawing
                     await level2.StartLevel(lineDraw, speechIn, speechOut);
                     LevelCompleted();
                     break;
-                /*case 3:
-                    await speechOut.Speak("Using the voice command 'show' you can find other drawn objects. Use the command 'show eyes' and 'show mouth'.");
+                case 3:
+                    Level3 level3 = new Level3();
+                    await level3.StartLevel(lineDraw, speechIn, speechOut);
+                    LevelCompleted();
+                    break;
+                    /*await speechOut.Speak("Using the voice command 'show' you can find other drawn objects. Use the command 'show eyes' and 'show mouth'.");
                     await lineDraw.TraceLine("Mouth");
                     await lineDraw.TraceLine("Eye");
                     await lineDraw.TraceLine("Eye2");
