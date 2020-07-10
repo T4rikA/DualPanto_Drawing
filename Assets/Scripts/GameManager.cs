@@ -11,14 +11,15 @@ namespace PantoDrawing
 {
     public class GameManager : MonoBehaviour
     {
-        
+        static GameManager instance;
         UpperHandle upperHandle;
         LowerHandle lowerHandle;
         private SpeechIn speechIn;
         private SpeechOut speechOut;
         int level = 1;
 
-        Dictionary<string, KeyCode> commands = new Dictionary<string, KeyCode>() {
+        public Dictionary<string, KeyCode> commands = new Dictionary<string, KeyCode>() {
+            { "yes", KeyCode.Y },
             { "no", KeyCode.N },
             { "done", KeyCode.D },
             { "circle", KeyCode.C }
@@ -35,12 +36,6 @@ namespace PantoDrawing
         {
             speechIn = new SpeechIn(onRecognized, commands.Keys.ToArray());
             speechOut = new SpeechOut();
-            DontDestroyOnLoad(GameObject.Find("Panto"));
-            DontDestroyOnLoad(GameObject.Find("Upper"));
-            DontDestroyOnLoad(GameObject.Find("Lower"));
-            DontDestroyOnLoad(GetComponent<UpperHandle>());
-            DontDestroyOnLoad(GetComponent<UpperHandle>());
-            
             /*if (level < 0 || level >= enemyConfigs.Length)
             {
                 Debug.LogWarning($"Level value {level} < 0 or >= enemyConfigs.Length. Resetting to 0");
@@ -59,7 +54,7 @@ namespace PantoDrawing
             Debug.Log("Before Introduction");
             speechIn.StartListening();
             RegisterColliders();
-            Debug.Log(testing);
+            level = SceneManager.GetActiveScene().buildIndex;
             if(!testing)
             {
                 Levels();
@@ -80,10 +75,6 @@ namespace PantoDrawing
                 case "circle":
                     Debug.Log("circle");
                     lineDraw.CreateCircle();
-                    break;
-                case "show":
-                    Debug.Log("show");
-                    await lineDraw.ShowLines();
                     break;
                 case "repeat":
                     await speechOut.Repeat();
@@ -169,8 +160,7 @@ namespace PantoDrawing
         public async void LevelCompleted()
         {
             await speechOut.Speak("You completed the level");
-            level++;
-            LoadScene(level % (SceneManager.sceneCountInBuildSettings));
+            LoadScene(level+1 % (SceneManager.sceneCountInBuildSettings));
         }
 
         public void LoadScene(int index)

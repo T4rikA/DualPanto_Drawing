@@ -68,8 +68,10 @@ namespace PantoDrawing
                 {
                     lines.Add("line"+lineCount, lineRenderer);
                     lineRenderer.name = "line"+lineCount;
+                    //GameObject.Find("Panto").GetComponent<GameManager>().commands.Add("1" , KeyCode.lineCount);
                     lineCount++;
                     drawing = false;
+
                 }
             }
         }

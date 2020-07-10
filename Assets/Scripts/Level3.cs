@@ -18,7 +18,6 @@ namespace PantoDrawing
             await speechIn.Listen(new Dictionary<string, KeyCode>() { { "yes", KeyCode.Y }});
             lineDraw.canDraw = false;
             await lineDraw.TraceLine(lineDraw.lines["line"+(lineDraw.lineCount-1)]);
-            
         }
     }
 }
