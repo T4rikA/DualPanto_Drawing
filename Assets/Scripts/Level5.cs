@@ -13,7 +13,7 @@ namespace PantoDrawing
         {
             await speechOut.Speak("Now you have an empty paper, draw your own face. Feel free to use the options command for all tools.");
             lineDraw.canDraw = true;
-            await speechOut.Speak("Can you find your drawn nose? Say yes or done when you're ready.");
+            await speechOut.Speak("Say yes or done when you're ready.");
             await speechIn.Listen(new Dictionary<string, KeyCode>() { { "yes", KeyCode.Y }});
             lineDraw.canDraw = false;
         }

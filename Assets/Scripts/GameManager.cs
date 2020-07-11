@@ -147,6 +147,7 @@ namespace PantoDrawing
                     break;
                 default:
                     Debug.Log("Default level case");
+                    lineDraw.canDraw = true;
                     break;
             }
         }
@@ -154,7 +155,7 @@ namespace PantoDrawing
         public async void LevelCompleted()
         {
             await speechOut.Speak("You completed the level");
-            LoadScene(level+1 % (SceneManager.sceneCountInBuildSettings));
+            LoadScene((level+1) % (SceneManager.sceneCountInBuildSettings));
         }
 
         public void LoadScene(int index)
