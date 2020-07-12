@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using SpeechIO;
+using PantoDrawSpeech;
 using System.Threading.Tasks;
 
 namespace PantoDrawing
@@ -17,7 +17,7 @@ namespace PantoDrawing
             await speechOut.Speak("Draw the second eye now.");
             lineDraw.canDraw = true;
             await speechOut.Speak("Say circle when you're ready, then yes to finish.");
-            await speechIn.Listen(new Dictionary<string, KeyCode>() { { "yes", KeyCode.Y }});
+            //await speechIn.Listen(new Dictionary<string, KeyCode>() { { "yes", KeyCode.Y }});
             lineDraw.canDraw = false;
             LineRenderer secondEye = lineDraw.lines["line"+(lineDraw.lineCount-1)];
             secondEye.name = "Eye2";

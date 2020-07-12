@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Threading.Tasks;
-using SpeechIO;
+using PantoDrawSpeech;
 using System.Linq;
 using UnityEngine.SceneManagement;
 using DualPantoFramework;
@@ -69,7 +69,6 @@ namespace PantoDrawing
 
         async void onRecognized(string message)
         {
-            //WIP
             switch (message)
             {
                 case "circle":
@@ -87,14 +86,14 @@ namespace PantoDrawing
                 case "done":
                     lineDraw.canDraw = false;
                     break;
-                /*case "options":
-                    string commandlist = "";
-                    foreach (string command in commands.Keys)
-                    {
-                        commandlist += command + ", ";
-                    }
-                    await speechOut.Speak("currently available commands: " + commandlist);
-                    break;*/
+                case "options":
+                string commandlist = "";
+                foreach (KeyValuePair<string, KeyCode> command in commands)
+                {
+                    commandlist += command.Value + ", ";
+                }
+                await speechOut.Speak("currently available commands: " + commandlist);
+                break;
             }
         }
         
