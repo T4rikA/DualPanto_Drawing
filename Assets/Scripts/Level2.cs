@@ -17,7 +17,8 @@ namespace PantoDrawing
             await speechOut.Speak("Draw the second eye now.");
             lineDraw.canDraw = true;
             await speechOut.Speak("Say circle when you're ready, then yes to finish.");
-            //await speechIn.Listen(new Dictionary<string, KeyCode>() { { "yes", KeyCode.Y }});
+            while(await speechIn.Listen(new string[] {"Yes"}) != "Yes");
+            lineDraw.CreateCircle();
             lineDraw.canDraw = false;
             LineRenderer secondEye = lineDraw.lines["line"+(lineDraw.lineCount-1)];
             secondEye.name = "Eye2";

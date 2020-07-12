@@ -15,7 +15,7 @@ namespace PantoDrawing
             await speechOut.Speak("Draw the second half.");   
             lineDraw.canDraw = true;
             await speechOut.Speak("Say yes or done when you're ready.");
-            //await speechIn.Listen(new Dictionary<string, KeyCode>() { { "yes", KeyCode.Y }});
+            while(await speechIn.Listen(new string[] {"Yes"}) != "Yes");
             lineDraw.canDraw = false;
         }
     }
