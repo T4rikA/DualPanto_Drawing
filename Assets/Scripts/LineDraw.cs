@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DualPantoFramework;
 using System.Threading.Tasks;
+using SpeechIO;
 
 namespace PantoDrawing
 {
@@ -11,8 +12,7 @@ namespace PantoDrawing
 
         public GameObject linePrefab;
         public GameObject currentLine;
-
-        public bool canDraw;
+        public bool canDraw = false;
 
         UpperHandle upperHandle;
         LowerHandle lowerHandle;
@@ -28,7 +28,6 @@ namespace PantoDrawing
 
         public List<Vector3> fingerPositions;
 
-        //Dictonary to store all lines e.g. eye -> contains line user named eye
         public Dictionary<string, LineRenderer> lines = new Dictionary<string, LineRenderer>();
 
         // Start is called before the first frame update
@@ -68,10 +67,12 @@ namespace PantoDrawing
                 {
                     lines.Add("line"+lineCount, lineRenderer);
                     lineRenderer.name = "line"+lineCount;
-                    //GameObject.Find("Panto").GetComponent<GameManager>().commands.Add("1" , KeyCode.lineCount);
+                    GameObject.Find("Panto").GetComponent<GameManager>().keywords.Add("line"+lineCount, () =>
+                    {
+                        TraceLine(lines["line"+lineCount]);
+                    });
                     lineCount++;
                     drawing = false;
-
                 }
             }
         }

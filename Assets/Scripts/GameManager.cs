@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Threading.Tasks;
-using PantoDrawSpeech;
+using SpeechIO;
 using System.Linq;
 using UnityEngine.SceneManagement;
 using DualPantoFramework;
@@ -18,15 +18,22 @@ namespace PantoDrawing
         private SpeechOut speechOut;
         int level = 1;
 
-        public Dictionary<string, KeyCode> commands = new Dictionary<string, KeyCode>() {
+
+        /*public Dictionary<string, KeyCode> commands = new Dictionary<string, KeyCode>() {
             { "yes", KeyCode.Y },
             { "no", KeyCode.N },
             { "done", KeyCode.D },
             { "circle", KeyCode.C }
-        };
+        };*/
         
-        public bool doLevel = true;
-        public bool testing = true;
+        public Dictionary<string, System.Action> keywords = new Dictionary<string, System.Action>() {
+            { "test", () =>
+                {
+                    Debug.Log("it works!!!");
+                }}
+        };
+
+        bool levelMode = false;
 
         //public FirstLevel firstLevel; um die level ggf auszulagern in ein eigenes Skript aber das mag grad nciht
 
@@ -34,14 +41,8 @@ namespace PantoDrawing
 
         void Awake()
         {
-            speechIn = new SpeechIn(onRecognized, commands.Keys.ToArray());
+            speechIn = new SpeechIn(onRecognized, keywords.Keys.ToArray());
             speechOut = new SpeechOut();
-            /*if (level < 0 || level >= enemyConfigs.Length)
-            {
-                Debug.LogWarning($"Level value {level} < 0 or >= enemyConfigs.Length. Resetting to 0");
-                level = 0;
-            }*/
-            
         }
         
 
@@ -50,18 +51,17 @@ namespace PantoDrawing
             upperHandle = GetComponent<UpperHandle>();
             lowerHandle = GetComponent<LowerHandle>();
             lineDraw = GameObject.Find("Panto").GetComponent<LineDraw>();
-            lineDraw.canDraw = false;
             Debug.Log("Before Introduction");
             speechIn.StartListening();
             RegisterColliders();
+            keywords.Add("baum", () => {Debug.Log("baum");});
             level = SceneManager.GetActiveScene().buildIndex;
-            if(!testing)
+            if(!levelMode)
             {
+                Debug.Log(levelMode);
                 Levels();
             } else
             {
-                Debug.Log("reload");
-                LoadScene(0);
                 lineDraw.canDraw = true;
             }
         }
@@ -88,12 +88,25 @@ namespace PantoDrawing
                     break;
                 case "options":
                 string commandlist = "";
-                foreach (KeyValuePair<string, KeyCode> command in commands)
+                foreach (KeyValuePair<string, System.Action> command in keywords)
                 {
                     commandlist += command.Value + ", ";
                 }
                 await speechOut.Speak("currently available commands: " + commandlist);
                 break;
+                default:
+                defaultSpeech(message);
+                break;
+            }
+        }
+
+        private void defaultSpeech(string text)
+        {
+            System.Action keywordAction;
+            // if the keyword recognized is in our dictionary, call that Action.
+            if (keywords.TryGetValue(text, out keywordAction))
+            {
+                keywordAction.Invoke();
             }
         }
         
