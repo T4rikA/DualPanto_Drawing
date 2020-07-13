@@ -18,6 +18,10 @@ namespace PantoDrawing
         private SpeechOut speechOut;
         int level = 1;
         private static LevelMaster levelMaster;
+
+        GameObject level1;
+        GameObject level2;
+        GameObject level4;
      
         public Dictionary<string, System.Action> keywords = new Dictionary<string, System.Action>() {
             { "circle", () => {
@@ -29,7 +33,7 @@ namespace PantoDrawing
                 }}
         };
 
-        bool levelMode = false;
+        public bool levelMode = true;
 
         //public FirstLevel firstLevel; um die level ggf auszulagern in ein eigenes Skript aber das mag grad nciht
 
@@ -50,6 +54,17 @@ namespace PantoDrawing
             Debug.Log("Before Introduction");
             speechIn.StartListening();
             RegisterColliders();
+
+
+            level1 = GameObject.Find("Level1");
+            level1.SetActive(false);
+
+            level2 = GameObject.Find("Level2");
+            level2.SetActive(false);
+
+            level4 = GameObject.Find("Level4");
+            level4.SetActive(false);
+
             if(!levelMode)
             {
                 Debug.Log(levelMode);
@@ -120,12 +135,14 @@ namespace PantoDrawing
             switch(level)
             {
                 case 1:
+                    level1.SetActive(true);
                     levelMaster = (new GameObject("Level1")).AddComponent<Level1>();
                     await levelMaster.StartLevel(lineDraw, speechIn, speechOut);
                     level++;
                     Levels();
                     break;
                 case 2:
+                    level2.SetActive(true);
                     levelMaster = (new GameObject("Level2")).AddComponent<Level2>();
                     await levelMaster.StartLevel(lineDraw, speechIn, speechOut);
                     level++;
@@ -138,6 +155,7 @@ namespace PantoDrawing
                     Levels();
                     break;
                 case 4:
+                    level4.SetActive(true);
                     levelMaster = (new GameObject("Level4")).AddComponent<Level4>();
                     await levelMaster.StartLevel(lineDraw, speechIn, speechOut);
                     level++;

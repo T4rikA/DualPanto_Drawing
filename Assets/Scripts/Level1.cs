@@ -15,6 +15,7 @@ namespace PantoDrawing
             await speechOut.Speak("Explore your drawing area. Say yes when you're ready.");
             StartCoroutine(Finish());
             await speechOut.Speak("Introduction finished, start level one.");
+            GameObject.Find("Level1").active = true;
             LineRenderer mouth = GameObject.Find("Mouth").GetComponent<LineRenderer>();
             lineDraw.TraceLine(mouth);
             await speechOut.Speak("Here you can feel the first half of a mouth.");
@@ -22,6 +23,7 @@ namespace PantoDrawing
             await speechOut.Speak("Draw the second half. Turn the lower Handle to start drawing.");
             lineDraw.canDraw = true;
             await speechOut.Speak("Say yes when you're ready.");
+            await speechIn.Listen(new Dictionary<string, KeyCode>() { { "yes", KeyCode.Y }});
             StartCoroutine(Finish());
             lineDraw.canDraw = false;
             LineRenderer secondMouth = lineDraw.lines["line"+(lineDraw.lineCount-1)];
