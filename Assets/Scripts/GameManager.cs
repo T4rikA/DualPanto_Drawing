@@ -26,7 +26,7 @@ namespace PantoDrawing
             { "yes", () => {
                     Debug.Log("yes");
                     levelMaster.ready = true;
-                }},
+                }}
         };
 
         bool levelMode = false;
@@ -75,16 +75,16 @@ namespace PantoDrawing
                     Application.Quit();
                     break;
                 case "options":
-                string commandlist = "";
-                foreach (KeyValuePair<string, System.Action> command in keywords)
-                {
-                    commandlist += command.Key + ", ";
-                }
-                await speechOut.Speak("currently available commands: " + commandlist);
-                break;
+                    string commandlist = "";
+                    foreach (KeyValuePair<string, System.Action> command in keywords)
+                    {
+                        commandlist += command.Key + ", ";
+                    }
+                    await speechOut.Speak("currently available commands: " + commandlist);
+                    break;
                 default:
-                defaultSpeech(message);
-                break;
+                    defaultSpeech(message);
+                    break;
             }
         }
 
