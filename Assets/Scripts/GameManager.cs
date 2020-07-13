@@ -17,19 +17,15 @@ namespace PantoDrawing
         private SpeechIn speechIn;
         private SpeechOut speechOut;
         int level = 1;
-
-
-        /*public Dictionary<string, KeyCode> commands = new Dictionary<string, KeyCode>() {
-            { "yes", KeyCode.Y },
-            { "no", KeyCode.N },
-            { "done", KeyCode.D },
-            { "circle", KeyCode.C }
-        };*/
-        
+        private static LevelMaster levelMaster;
+     
         public Dictionary<string, System.Action> keywords = new Dictionary<string, System.Action>() {
-            { "test", () =>
-                {
-                    Debug.Log("it works!!!");
+            { "circle", () => {
+                    Debug.Log("circle");
+                }},
+            { "yes", () => {
+                    Debug.Log("yes");
+                    levelMaster.ready = true;
                 }}
         };
 
@@ -54,7 +50,6 @@ namespace PantoDrawing
             Debug.Log("Before Introduction");
             speechIn.StartListening();
             RegisterColliders();
-            keywords.Add("baum", () => {Debug.Log("baum");});
             level = SceneManager.GetActiveScene().buildIndex;
             if(!levelMode)
             {
@@ -71,10 +66,6 @@ namespace PantoDrawing
         {
             switch (message)
             {
-                case "circle":
-                    Debug.Log("circle");
-                    lineDraw.CreateCircle();
-                    break;
                 case "repeat":
                     await speechOut.Repeat();
                     break;
@@ -83,20 +74,17 @@ namespace PantoDrawing
                     OnApplicationQuit();
                     Application.Quit();
                     break;
-                case "done":
-                    lineDraw.canDraw = false;
-                    break;
                 case "options":
-                string commandlist = "";
-                foreach (KeyValuePair<string, System.Action> command in keywords)
-                {
-                    commandlist += command.Value + ", ";
-                }
-                await speechOut.Speak("currently available commands: " + commandlist);
-                break;
+                    string commandlist = "";
+                    foreach (KeyValuePair<string, System.Action> command in keywords)
+                    {
+                        commandlist += command.Key + ", ";
+                    }
+                    await speechOut.Speak("currently available commands: " + commandlist);
+                    break;
                 default:
-                defaultSpeech(message);
-                break;
+                    defaultSpeech(message);
+                    break;
             }
         }
 
@@ -133,8 +121,8 @@ namespace PantoDrawing
             switch(level)
             {
                 case 1:
-                    Level1 level1 = new Level1();
-                    await level1.StartLevel(lineDraw, speechIn, speechOut);
+                    levelMaster = (new GameObject("Level1")).AddComponent<Level1>();;
+                    await levelMaster.StartLevel(lineDraw, speechIn, speechOut);
                     LevelCompleted();
                     break;
                 case 2:
