@@ -57,13 +57,13 @@ namespace PantoDrawing
 
 
             level1 = GameObject.Find("Level1");
-            level1.SetActive(false);
+            //level1.SetActive(false);
 
             level2 = GameObject.Find("Level2");
-            level2.SetActive(false);
+            //level2.SetActive(false);
 
             level4 = GameObject.Find("Level4");
-            level4.SetActive(false);
+            //level4.SetActive(false);
 
             if(!levelMode)
             {
