@@ -50,7 +50,6 @@ namespace PantoDrawing
             Debug.Log("Before Introduction");
             speechIn.StartListening();
             RegisterColliders();
-            level = SceneManager.GetActiveScene().buildIndex;
             if(!levelMode)
             {
                 Debug.Log(levelMode);
@@ -123,45 +122,38 @@ namespace PantoDrawing
                 case 1:
                     levelMaster = (new GameObject("Level1")).AddComponent<Level1>();
                     await levelMaster.StartLevel(lineDraw, speechIn, speechOut);
-                    LevelCompleted();
+                    level++;
+                    Levels();
                     break;
                 case 2:
                     levelMaster = (new GameObject("Level2")).AddComponent<Level2>();
-                    await level2.StartLevel(lineDraw, speechIn, speechOut);
-                    LevelCompleted();
+                    await levelMaster.StartLevel(lineDraw, speechIn, speechOut);
+                    level++;
+                    Levels();
                     break;
                 case 3:
                     levelMaster = (new GameObject("Level3")).AddComponent<Level3>();
-                    await level3.StartLevel(lineDraw, speechIn, speechOut);
-                    LevelCompleted();
+                    await levelMaster.StartLevel(lineDraw, speechIn, speechOut);
+                    level++;
+                    Levels();
                     break;
                 case 4:
                     levelMaster = (new GameObject("Level4")).AddComponent<Level4>();
-                    await level4.StartLevel(lineDraw, speechIn, speechOut);
-                    LevelCompleted();
+                    await levelMaster.StartLevel(lineDraw, speechIn, speechOut);
+                    level++;
+                    Levels();
                     break;
                 case 5:
                     levelMaster = (new GameObject("Level5")).AddComponent<Level5>();
-                    await level5.StartLevel(lineDraw, speechIn, speechOut);
-                    LevelCompleted();
+                    await levelMaster.StartLevel(lineDraw, speechIn, speechOut);
+                    level++;
+                    Levels();
                     break;
                 default:
                     Debug.Log("Default level case");
                     lineDraw.canDraw = true;
                     break;
             }
-        }
-
-        public async void LevelCompleted()
-        {
-            await speechOut.Speak("You completed the level");
-            LoadScene((level+1) % (SceneManager.sceneCountInBuildSettings));
-        }
-
-        public void LoadScene(int index)
-        {
-            Debug.Log("Load scene with index: "+index);
-            SceneManager.LoadScene(index);
         }
 
         async void levelThree()
@@ -177,13 +169,12 @@ namespace PantoDrawing
 
         void ResetGame()
         {
-            level = 0;
-            LoadScene(level);
+            //TODO
         }
 
         public void RestartLevel()
         {
-            LoadScene(SceneManager.GetActiveScene().buildIndex);
+            //TODO
         }
 
         async Task GameOver()
