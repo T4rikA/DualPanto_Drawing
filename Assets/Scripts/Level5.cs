@@ -16,6 +16,7 @@ namespace PantoDrawing
             await speechOut.Speak("Say yes or done when you're ready.");
             while(await speechIn.Listen(new string[] {"Yes"}) != "Yes");
             lineDraw.canDraw = false;
+            speechOut.Speak("Congratulations! You completed all level!");
         }
     }
 }

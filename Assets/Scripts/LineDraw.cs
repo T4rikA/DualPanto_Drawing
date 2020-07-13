@@ -190,5 +190,15 @@ namespace PantoDrawing
                 } 
             }
         }
+
+        public void ResetDrawingArea()
+        {
+            foreach (KeyValuePair<string, LineRenderer> line in lines)
+            {
+                Destroy(line.Value);
+            }
+            lines = new Dictionary<string, LineRenderer>();
+            lineCount = 0;
+        }
     }
 }

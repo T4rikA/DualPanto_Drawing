@@ -57,13 +57,13 @@ namespace PantoDrawing
 
 
             level1 = GameObject.Find("Level1");
-            //level1.SetActive(false);
+            level1.SetActive(false);
 
             level2 = GameObject.Find("Level2");
-            //level2.SetActive(false);
+            level2.SetActive(false);
 
             level4 = GameObject.Find("Level4");
-            //level4.SetActive(false);
+            level4.SetActive(false);
 
             if(!levelMode)
             {
@@ -162,10 +162,14 @@ namespace PantoDrawing
                     Levels();
                     break;
                 case 5:
+                    level1.SetActive(false);
+                    level2.SetActive(false);
+                    level4.SetActive(false);
+                    lineDraw.ResetDrawingArea();
                     levelMaster = (new GameObject("Level5")).AddComponent<Level5>();
                     await levelMaster.StartLevel(lineDraw, speechIn, speechOut);
                     level++;
-                    Levels();
+                    Levels();//why?
                     break;
                 default:
                     Debug.Log("Default level case");
@@ -174,16 +178,6 @@ namespace PantoDrawing
             }
         }
 
-        async void levelThree()
-        {
-            await speechOut.Speak("Using the voice command 'show' you can find other drawn objects. Use the command 'show eyes' and 'show mouth'.");
-
-            await speechOut.Speak("Draw a nose in the right spot. Turn the it-Handle to start you drawing. Name it also. Doing so you can create subdrawings.");   
-            
-            await speechOut.Speak("Say yes or done when you're ready.");
-            
-            //zeichnen bis drawing = false
-        }
 
         void ResetGame()
         {
