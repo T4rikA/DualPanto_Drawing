@@ -121,27 +121,27 @@ namespace PantoDrawing
             switch(level)
             {
                 case 1:
-                    levelMaster = (new GameObject("Level1")).AddComponent<Level1>();;
+                    levelMaster = (new GameObject("Level1")).AddComponent<Level1>();
                     await levelMaster.StartLevel(lineDraw, speechIn, speechOut);
                     LevelCompleted();
                     break;
                 case 2:
-                    Level2 level2 = new Level2();
+                    levelMaster = (new GameObject("Level2")).AddComponent<Level2>();
                     await level2.StartLevel(lineDraw, speechIn, speechOut);
                     LevelCompleted();
                     break;
                 case 3:
-                    Level3 level3 = new Level3();
+                    levelMaster = (new GameObject("Level3")).AddComponent<Level3>();
                     await level3.StartLevel(lineDraw, speechIn, speechOut);
                     LevelCompleted();
                     break;
                 case 4:
-                    Level4 level4 = new Level4();
+                    levelMaster = (new GameObject("Level4")).AddComponent<Level4>();
                     await level4.StartLevel(lineDraw, speechIn, speechOut);
                     LevelCompleted();
                     break;
                 case 5:
-                    Level5 level5 = new Level5();
+                    levelMaster = (new GameObject("Level5")).AddComponent<Level5>();
                     await level5.StartLevel(lineDraw, speechIn, speechOut);
                     LevelCompleted();
                     break;

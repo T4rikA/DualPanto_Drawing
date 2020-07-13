@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace PantoDrawing
 {   
-    public class Level2 : MonoBehaviour
+    public class Level2 : LevelMaster
     {
         // Start is called before the first frame update
-        public async Task StartLevel(LineDraw lineDraw, SpeechIn speechIn, SpeechOut speechOut)
+        public override async Task StartLevel(LineDraw lineDraw, SpeechIn speechIn, SpeechOut speechOut)
         {
             LineRenderer eye = GameObject.Find("Eye").GetComponent<LineRenderer>();
             lineDraw.TraceLine(eye);

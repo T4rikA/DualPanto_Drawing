@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace PantoDrawing
 {   
-    public class Level5 : MonoBehaviour
+    public class Level5 : LevelMaster
     {
         // Start is called before the first frame update
-        public async Task StartLevel(LineDraw lineDraw, SpeechIn speechIn, SpeechOut speechOut)
+        public override async Task StartLevel(LineDraw lineDraw, SpeechIn speechIn, SpeechOut speechOut)
         {
             await speechOut.Speak("Now you have an empty paper, draw your own face. Feel free to use the options command for all tools.");
             lineDraw.canDraw = true;
