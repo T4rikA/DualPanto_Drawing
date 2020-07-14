@@ -15,7 +15,7 @@ namespace PantoDrawing
             await speechOut.Speak("Use the voice commands One, Two and Three and see what is happening.");   
             lineDraw.canDraw = true;
             await speechOut.Speak("Can you find your drawn nose? Say yes or done when you're ready.");
-            while(await speechIn.Listen(new string[] {"Yes"}) != "Yes");
+            await WaitFunction(ready);
             lineDraw.canDraw = false;
             await lineDraw.TraceLine(lineDraw.lines["line"+(lineDraw.lineCount-1)]);
         }

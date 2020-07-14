@@ -18,7 +18,7 @@ namespace PantoDrawing
         private SpeechOut speechOut;
         int level = 1;
         private static LevelMaster levelMaster;
-
+        private static LineDraw lineDraw;
         GameObject level1;
         GameObject level2;
         GameObject level4;
@@ -26,6 +26,7 @@ namespace PantoDrawing
         public Dictionary<string, System.Action> keywords = new Dictionary<string, System.Action>() {
             { "circle", () => {
                     Debug.Log("circle");
+                    lineDraw.CreateCircle();
                 }},
             { "yes", () => {
                     Debug.Log("yes");
@@ -36,8 +37,6 @@ namespace PantoDrawing
         public bool levelMode = true;
 
         //public FirstLevel firstLevel; um die level ggf auszulagern in ein eigenes Skript aber das mag grad nciht
-
-        private LineDraw lineDraw;
 
         void Awake()
         {

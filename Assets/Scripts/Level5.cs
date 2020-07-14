@@ -14,7 +14,7 @@ namespace PantoDrawing
             await speechOut.Speak("Now you have an empty paper, draw your own face. Feel free to use the options command for all tools.");
             lineDraw.canDraw = true;
             await speechOut.Speak("Say yes or done when you're ready.");
-            while(await speechIn.Listen(new string[] {"Yes"}) != "Yes");
+            await WaitFunction(ready);
             lineDraw.canDraw = false;
             speechOut.Speak("Congratulations! You completed all level!");
         }

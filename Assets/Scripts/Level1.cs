@@ -13,7 +13,7 @@ namespace PantoDrawing
         {
             await speechOut.Speak("Welcome to Panto Drawing");
             await speechOut.Speak("Explore your drawing area. Say yes when you're ready.");
-            await WaitFunction();
+            await WaitFunction(ready);
             await speechOut.Speak("Introduction finished, start level one.");
             GameObject.Find("Level1").active = true;
             LineRenderer mouth = GameObject.Find("Mouth").GetComponent<LineRenderer>();
@@ -24,20 +24,12 @@ namespace PantoDrawing
             lineDraw.canDraw = true;
             await speechOut.Speak("Say yes when you're ready.");
             ready = false;
-            await WaitFunction();
+            await WaitFunction(ready);
             lineDraw.canDraw = false;
             LineRenderer secondMouth = lineDraw.lines["line"+(lineDraw.lineCount-1)];
             secondMouth.name = "Mouth2";
             lineDraw.CombineLines(mouth, secondMouth, true); //they will be both one line in "Mouth", invert the second line
             await lineDraw.TraceLine(mouth);
-           
-        }
-
-
-        async Task WaitFunction(){
-            Debug.Log("waiting");
-            while(!ready)await Task.Delay(100);
-            Debug.Log("waiting over");
         }
     }
 }

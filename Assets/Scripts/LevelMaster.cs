@@ -14,5 +14,11 @@ namespace PantoDrawing
         }
 
         public abstract Task StartLevel(LineDraw lineDraw, SpeechIn speechIn, SpeechOut speechOut);
+
+        async protected Task WaitFunction(bool flag){
+            Debug.Log("waiting");
+            while(!ready)await Task.Delay(100);
+            Debug.Log("waiting over");
+        }
     }
 }
