@@ -22,7 +22,7 @@ namespace PantoDrawing
         public int lineCount = 0;
         //currently adding points to a line
         bool drawing = false;
-        bool mouse = false;
+        bool mouse = true;
 
         public LineRenderer lineRenderer;
 
