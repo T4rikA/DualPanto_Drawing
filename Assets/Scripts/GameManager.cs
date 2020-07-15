@@ -30,7 +30,10 @@ namespace PantoDrawing
                 }},
             { "yes", () => {
                     levelMaster.ready = true;
-                }}
+                }},
+            { "repeat" , () => {}},
+            { "options" , () => {}},
+            { "quit" , () => {}}
         };
 
         public bool levelMode = true;
