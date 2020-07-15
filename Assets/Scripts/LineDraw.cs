@@ -67,12 +67,15 @@ namespace PantoDrawing
                 {
                     lines.Add("line"+lineCount, lineRenderer);
                     lineRenderer.name = "line"+lineCount;
-                    GameObject.Find("Panto").GetComponent<GameManager>().keywords.Add("line"+lineCount, () =>
+                    
+                    GameObject.Find("Panto").GetComponent<GameManager>().AddVoiceCommand("test", () =>
                     {
-                        TraceLine(lines["line"+lineCount]);
+                        Debug.Log("here");
+                        TraceLine(lines["line"+(lineCount-1)]);
                     });
                     lineCount++;
                     drawing = false;
+                    GameManager.levelMaster.drawn = true;
                 }
             }
         }
@@ -138,7 +141,7 @@ namespace PantoDrawing
                 sumX += Mathf.Abs(linePos[i].x-center.x);
                 sumZ += Mathf.Abs(linePos[i].z-center.z);
             }
-            return new Vector3(sumX/line.positionCount, .1f, sumZ/line.positionCount);
+            return new Vector3(sumX/line.positionCount*1.56f, .1f, sumZ/line.positionCount*1.56f);
         }
 
         void UpdateLine(LineRenderer line, Vector3 newFingerPos)

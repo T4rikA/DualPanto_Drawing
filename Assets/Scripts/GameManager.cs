@@ -17,19 +17,18 @@ namespace PantoDrawing
         private SpeechIn speechIn;
         private SpeechOut speechOut;
         int level = 1;
-        private static LevelMaster levelMaster;
+        public static LevelMaster levelMaster;
         private static LineDraw lineDraw;
+
         GameObject level1;
         GameObject level2;
         GameObject level4;
      
         public Dictionary<string, System.Action> keywords = new Dictionary<string, System.Action>() {
             { "circle", () => {
-                    Debug.Log("circle");
                     lineDraw.CreateCircle();
                 }},
             { "yes", () => {
-                    Debug.Log("yes");
                     levelMaster.ready = true;
                 }}
         };
@@ -51,7 +50,7 @@ namespace PantoDrawing
             lowerHandle = GetComponent<LowerHandle>();
             lineDraw = GameObject.Find("Panto").GetComponent<LineDraw>();
             Debug.Log("Before Introduction");
-            speechIn.StartListening();
+            speechIn.StartListening(keywords.Keys.ToArray());
             RegisterColliders();
 
 
@@ -77,6 +76,7 @@ namespace PantoDrawing
 
         async void onRecognized(string message)
         {
+            Debug.Log(message);
             switch (message)
             {
                 case "repeat":
@@ -123,7 +123,6 @@ namespace PantoDrawing
             PantoCollider[] colliders = FindObjectsOfType<PantoCollider>();
             foreach (PantoCollider collider in colliders)
             {
-                //Debug.Log(collider);
                 collider.CreateObstacle();
                 collider.Enable();
             }
@@ -168,15 +167,19 @@ namespace PantoDrawing
                     levelMaster = (new GameObject("Level5")).AddComponent<Level5>();
                     await levelMaster.StartLevel(lineDraw, speechIn, speechOut);
                     level++;
-                    Levels();//why?
                     break;
                 default:
+                    //TODO
                     Debug.Log("Default level case");
                     lineDraw.canDraw = true;
                     break;
             }
         }
 
+        public void AddVoiceCommand(string commandKey, System.Action command){
+            keywords.Add(commandKey, command);
+            speechIn.StartListening(keywords.Keys.ToArray());
+        }
 
         void ResetGame()
         {
@@ -187,16 +190,5 @@ namespace PantoDrawing
         {
             //TODO
         }
-
-        async Task GameOver()
-        {
-            await speechOut.Speak("Thanks for using PantoDraw.");
-            Application.Quit();
-        }
 }
-    /*void async levelFour(){return;}
-
-    void async levelFive(){return;}
-
-    void draw(){return;}*/
 }
