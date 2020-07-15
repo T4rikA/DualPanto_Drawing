@@ -65,13 +65,12 @@ namespace PantoDrawing
             }else{
                 if(drawing)
                 {
-                    lines.Add("line"+lineCount, lineRenderer);
-                    lineRenderer.name = "line"+lineCount;
-                    
-                    GameObject.Find("Panto").GetComponent<GameManager>().AddVoiceCommand("test", () =>
+                    string lineName = "line"+lineCount;
+                    lines.Add(lineName, lineRenderer);
+                    lineRenderer.name = lineName;
+                    GameObject.Find("Panto").GetComponent<GameManager>().AddVoiceCommand(lineName, () =>
                     {
-                        Debug.Log("here");
-                        TraceLine(lines["line"+(lineCount-1)]);
+                        TraceLine(lines[lineName]);
                     });
                     lineCount++;
                     drawing = false;
