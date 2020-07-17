@@ -163,7 +163,7 @@ namespace PantoDrawing
             line.GetPositions(linePos);
             for (int i = 0; i < line.positionCount; i += 10)
             {
-                await lowerHandle.MoveToPosition(linePos[i], .1f);
+                await lowerHandle.MoveToPosition(linePos[i], handleVelocity);
             }
             Debug.Log(linePos[0]);
         }
