@@ -12,6 +12,10 @@ namespace PantoDrawing
         public override async Task StartLevel(LineDraw lineDraw, SpeechIn speechIn, SpeechOut speechOut)
         {
             LineRenderer eye = GameObject.Find("Eye").GetComponent<LineRenderer>();
+            GameObject.Find("Panto").GetComponent<GameManager>().AddVoiceCommand("Eye", () =>
+                    {
+                        lineDraw.TraceLine(eye);
+                    });
             lineDraw.TraceLine(eye);
             await speechOut.Speak("Here you can feel a human eye.");
             await speechOut.Speak("Draw the second eye now.");
@@ -20,7 +24,7 @@ namespace PantoDrawing
             await WaitFunction(ready);
             lineDraw.canDraw = false;
             LineRenderer secondEye = lineDraw.lines["line"+(lineDraw.lineCount-1)];
-            secondEye.name = "Eye2";
+
             await lineDraw.TraceLine(secondEye);
         }
     }

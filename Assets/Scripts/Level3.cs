@@ -12,9 +12,9 @@ namespace PantoDrawing
         public override async Task StartLevel(LineDraw lineDraw, SpeechIn speechIn, SpeechOut speechOut)
         {
             await speechOut.Speak("Now you can find your Mouth and the two Eyes in the picture. Draw a nose in the right spot");
-            await speechOut.Speak("Use the voice commands One, Two and Three and see what is happening.");   
+            await speechOut.Speak("Use the voice commands Mouth, Eye and line0 and see whats happening.");   
             lineDraw.canDraw = true;
-            await speechOut.Speak("Can you find your drawn nose? Say yes or done when you're ready.");
+            await speechOut.Speak("Can you find your drawn nose? Say yes when you're ready.");
             await WaitFunction(ready);
             lineDraw.canDraw = false;
             await lineDraw.TraceLine(lineDraw.lines["line"+(lineDraw.lineCount-1)]);

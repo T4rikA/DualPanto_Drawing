@@ -17,12 +17,17 @@ namespace PantoDrawing
             await WaitFunction(ready);
             Debug.Log(drawn);
             await speechOut.Speak("Introduction finished, start level one.");
-            GameObject.Find("Level1").active = true;
+
             LineRenderer mouth = GameObject.Find("Mouth").GetComponent<LineRenderer>();
-            await lineDraw.TraceLine(mouth);
+            GameObject.Find("Panto").GetComponent<GameManager>().AddVoiceCommand("Mouth", () =>
+                    {
+                        lineDraw.TraceLine(mouth);
+                    });
+            
             await speechOut.Speak("Here you can feel the first half of a mouth.");
+            await lineDraw.TraceLine(mouth);
             lineDraw.FindStartingPoint(mouth);
-            await speechOut.Speak("Draw the second half. Turn the lower Handle to start drawing.");
+            await speechOut.Speak("Draw the second half. Turn the upper Handle to start drawing.");
             lineDraw.canDraw = true;
             await speechOut.Speak("Say yes when you're ready.");
             Debug.Log(drawn);
@@ -30,7 +35,6 @@ namespace PantoDrawing
             Debug.Log(drawn);
             lineDraw.canDraw = false;
             LineRenderer secondMouth = lineDraw.lines["line"+(lineDraw.lineCount-1)];
-            secondMouth.name = "Mouth2";
             lineDraw.CombineLines(mouth, secondMouth, true); //they will be both one line in "Mouth", invert the second line
             await lineDraw.TraceLine(mouth);
         }
