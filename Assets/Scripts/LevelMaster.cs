@@ -9,7 +9,6 @@ namespace PantoDrawing
     {
         public bool ready;
         public bool drawn;
-        public int currentLineCount;
 
         public LevelMaster(){
             ready = false;
@@ -24,16 +23,6 @@ namespace PantoDrawing
             ready = false;
             drawn = false;
             Debug.Log("waiting over");
-        }
-
-        async protected Task WaitForDrawing(LineDraw lineDraw, SpeechOut speechOut, int currentLineCount)
-        {
-            lineDraw.canDraw = true;
-            while(currentLineCount == lineDraw.lineCount){
-                ready = false;
-                await speechOut.Speak("Say yes when you're ready drawing.");
-                await WaitFunction(ready);
-            }
         }
     }
 }

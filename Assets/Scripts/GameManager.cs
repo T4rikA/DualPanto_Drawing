@@ -38,6 +38,8 @@ namespace PantoDrawing
 
         public bool levelMode = true;
 
+        //public FirstLevel firstLevel; um die level ggf auszulagern in ein eigenes Skript aber das mag grad nciht
+
         void Awake()
         {
             speechIn = new SpeechIn(onRecognized, keywords.Keys.ToArray());
@@ -51,8 +53,7 @@ namespace PantoDrawing
             lowerHandle = GetComponent<LowerHandle>();
             lineDraw = GameObject.Find("Panto").GetComponent<LineDraw>();
             Debug.Log("Before Introduction");
-            speechIn.StartListening(keywords.Keys.ToArray());
-
+            speechIn.StartListening(keywords.Keys.ToArray());       
 
 
             level1 = GameObject.Find("Level1");
@@ -63,7 +64,8 @@ namespace PantoDrawing
 
             level4 = GameObject.Find("Level4");
             level4.SetActive(false);
-
+            await Task.Delay(1000); 
+            RegisterColliders();
             if(!levelMode)
             {
                 Debug.Log(levelMode);
@@ -122,10 +124,8 @@ namespace PantoDrawing
         void RegisterColliders()
         {
             PantoCollider[] colliders = FindObjectsOfType<PantoCollider>();
-            Debug.Log(colliders.Length);
             foreach (PantoCollider collider in colliders)
             {
-                Debug.Log(collider);
                 collider.CreateObstacle();
                 collider.Enable();
             }
@@ -133,9 +133,6 @@ namespace PantoDrawing
 
         async void Levels()
         {
-            await Task.Delay(1000);
-            RegisterColliders();
-            
             switch(level)
             {
                 case 1:
