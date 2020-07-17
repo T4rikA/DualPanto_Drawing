@@ -64,7 +64,7 @@ namespace PantoDrawing
 
             level4 = GameObject.Find("Level4");
             level4.SetActive(false);
-            await Task.Delay(1000); 
+            
             RegisterColliders();
             if(!levelMode)
             {
@@ -121,8 +121,9 @@ namespace PantoDrawing
         }
 
         
-        void RegisterColliders()
+        async void RegisterColliders()
         {
+            await Task.Delay(1000);
             PantoCollider[] colliders = FindObjectsOfType<PantoCollider>();
             foreach (PantoCollider collider in colliders)
             {

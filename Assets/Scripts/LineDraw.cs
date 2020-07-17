@@ -24,11 +24,15 @@ namespace PantoDrawing
         bool drawing = false;
         bool mouse = false;
 
+        float handleVelocity = .1f;
+
         public LineRenderer lineRenderer;
 
         public List<Vector3> fingerPositions;
 
         public Dictionary<string, LineRenderer> lines = new Dictionary<string, LineRenderer>();
+
+        public Audio audio;
 
         // Start is called before the first frame update
         void Start()
@@ -36,6 +40,7 @@ namespace PantoDrawing
             upperHandle = GameObject.Find("Panto").GetComponent<UpperHandle>();
             lowerHandle = GameObject.Find("Panto").GetComponent<LowerHandle>();
             upperRotation = lowerHandle.GetRotation();
+            audio = GameObject.Find("Panto").GetComponent<Audio>();
         }
 
         // Update is called once per frame
@@ -52,6 +57,7 @@ namespace PantoDrawing
                 angle = Mathf.Abs((angle + 180) % 360 - 180);
                 CreateLine();
                 drawing = true;
+                audio.drawingSound();
             }
             if((angle < 30f && !mouse && drawing) || (Input.GetMouseButton(0) && mouse)){
                 Vector3 tempFingerPos = upperHandle.HandlePosition(transform.position);
@@ -74,6 +80,7 @@ namespace PantoDrawing
                     });
                     lineCount++;
                     drawing = false;
+                    audio.stopSound();
                     GameManager.levelMaster.drawn = true;
                 }
             }
@@ -154,7 +161,7 @@ namespace PantoDrawing
         {
             Vector3[] linePos = new Vector3[line.positionCount];
             line.GetPositions(linePos);
-            for (int i = 0; i < line.positionCount; i += 2)
+            for (int i = 0; i < line.positionCount; i += 10)
             {
                 await lowerHandle.MoveToPosition(linePos[i], .1f);
             }
@@ -165,7 +172,7 @@ namespace PantoDrawing
         {
             Vector3[] linePos = new Vector3[line.positionCount];
             line.GetPositions(linePos);
-            await lowerHandle.MoveToPosition(linePos[0], .2f);
+            await lowerHandle.MoveToPosition(linePos[0], handleVelocity);
         }
 
         public async Task ShowLines(){

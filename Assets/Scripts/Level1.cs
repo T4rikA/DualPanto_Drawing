@@ -19,7 +19,7 @@ namespace PantoDrawing
             await speechOut.Speak("Introduction finished, start level one.");
             GameObject.Find("Level1").active = true;
             LineRenderer mouth = GameObject.Find("Mouth").GetComponent<LineRenderer>();
-            lineDraw.TraceLine(mouth);
+            await lineDraw.TraceLine(mouth);
             await speechOut.Speak("Here you can feel the first half of a mouth.");
             lineDraw.FindStartingPoint(mouth);
             await speechOut.Speak("Draw the second half. Turn the lower Handle to start drawing.");
