@@ -161,7 +161,7 @@ namespace PantoDrawing
         {
             Vector3[] linePos = new Vector3[line.positionCount];
             line.GetPositions(linePos);
-            for (int i = 0; i < line.positionCount; i += 10)
+            for (int i = 0; i < line.positionCount; i += 8)
             {
                 await lowerHandle.MoveToPosition(linePos[i], handleVelocity);
             }
