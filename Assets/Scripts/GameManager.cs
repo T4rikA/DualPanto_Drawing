@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Threading.Tasks;
@@ -53,7 +53,7 @@ namespace PantoDrawing
             lowerHandle = GetComponent<LowerHandle>();
             lineDraw = GameObject.Find("Panto").GetComponent<LineDraw>();
             Debug.Log("Before Introduction");
-            speechIn.StartListening(keywords.Keys.ToArray());       
+            speechIn.StartListening(keywords.Keys.ToArray());
 
 
             level1 = GameObject.Find("Level1");
@@ -75,7 +75,6 @@ namespace PantoDrawing
                 lineDraw.canDraw = true;
             }
         }
-
 
         async void onRecognized(string message)
         {
@@ -164,6 +163,7 @@ namespace PantoDrawing
                     Levels();
                     break;
                 case 5:
+                    ResetSpeech();
                     level1.SetActive(false);
                     level2.SetActive(false);
                     level4.SetActive(false);
@@ -178,6 +178,21 @@ namespace PantoDrawing
                     lineDraw.canDraw = true;
                     break;
             }
+        }
+        void ResetSpeech()
+        {
+            keywords = new Dictionary<string, System.Action>() {
+            { "circle", () => {
+                    lineDraw.CreateCircle();
+                }},
+            { "yes", () => {
+                    levelMaster.ready = true;
+                }},
+            { "repeat" , () => {}},
+            { "options" , () => {}},
+            { "quit" , () => {}}
+            };
+            speechIn = new SpeechIn(onRecognized, keywords.Keys.ToArray());
         }
 
         public void AddVoiceCommand(string commandKey, System.Action command){
