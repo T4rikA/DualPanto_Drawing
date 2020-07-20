@@ -13,6 +13,7 @@ namespace PantoDrawing
         void Start()
         {
             audioSource = GetComponent<AudioSource>();
+            audioSource.pitch = 2;
             
         }
 

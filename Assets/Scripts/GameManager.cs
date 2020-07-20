@@ -66,7 +66,7 @@ namespace PantoDrawing
             level4.SetActive(false);
             
             RegisterColliders();
-            if(false)
+            if(!levelMode)
             {
                 Debug.Log(levelMode);
                 Levels();
@@ -136,6 +136,7 @@ namespace PantoDrawing
             switch(level)
             {
                 case 1:
+                    Debug.Log("Starting Level1");
                     level1.SetActive(true);
                     levelMaster = (new GameObject("Level1")).AddComponent<Level1>();
                     await levelMaster.StartLevel(lineDraw, speechIn, speechOut);
