@@ -66,7 +66,7 @@ namespace PantoDrawing
             level4.SetActive(false);
             
             RegisterColliders();
-            if(!levelMode)
+            if(false)
             {
                 Debug.Log(levelMode);
                 Levels();

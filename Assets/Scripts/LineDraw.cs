@@ -22,7 +22,7 @@ namespace PantoDrawing
         public int lineCount = 0;
         //currently adding points to a line
         bool drawing = false;
-        bool mouse = false;
+        bool mouse = true;
 
         float handleVelocity = .1f;
 
@@ -72,6 +72,9 @@ namespace PantoDrawing
                 if(drawing)
                 {
                     string lineName = "line"+lineCount;
+                    Vector3[] linePos = new Vector3[lineRenderer.positionCount];
+                    lineRenderer.GetPositions(linePos);
+                    lineRenderer.SetPositions(Curver.MakeSmoothCurve(linePos, .5f));
                     lines.Add(lineName, lineRenderer);
                     lineRenderer.name = lineName;
                     GameObject.Find("Panto").GetComponent<GameManager>().AddVoiceCommand(lineName, () =>

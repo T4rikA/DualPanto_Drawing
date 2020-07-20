@@ -2,27 +2,31 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Audio : MonoBehaviour
+namespace PantoDrawing
 {
-    private AudioSource audioSource;
-    public AudioClip drawing;
-    // Start is called before the first frame update
-    void Start()
+
+    public class Audio : MonoBehaviour
     {
-        audioSource = GetComponent<AudioSource>();
+        private AudioSource audioSource;
+        public AudioClip drawing;
+        // Start is called before the first frame update
+        void Start()
+        {
+            audioSource = GetComponent<AudioSource>();
+            
+        }
+
         
-    }
+        public void drawingSound()
+        {
+            audioSource.clip = drawing;
+            audioSource.Play();
+        }
 
-    
-    public void drawingSound()
-    {
-        audioSource.clip = drawing;
-        audioSource.Play();
-    }
+        public void stopSound()
+        {
+            audioSource.Stop();
+        }
 
-    public void stopSound()
-    {
-        audioSource.Stop();
     }
-
 }
