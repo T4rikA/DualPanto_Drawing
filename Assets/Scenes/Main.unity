@@ -298,7 +298,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   level: 1
-  levelMode: 0
+  levelMode: 1
 --- !u!82 &592711449
 AudioSource:
   m_ObjectHideFlags: 0
