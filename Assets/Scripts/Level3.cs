@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 
 namespace PantoDrawing
 {   
-    public class Level3 : MonoBehaviour
+    public class Level3 : LevelMaster
     {
         // Start is called before the first frame update
-        public async Task StartLevel(LineDraw lineDraw, SpeechIn speechIn, SpeechOut speechOut)
+        public override async Task StartLevel(LineDraw lineDraw, SpeechIn speechIn, SpeechOut speechOut)
         {
-            await speechOut.Speak("This time you can find two eyes and a mouth. Draw a nose in the right spot");
-            await speechOut.Speak("Use the voice commands One, Two and Three and see what is happening.");   
+            await speechOut.Speak("Now you can find your Mouth and the two Eyes in the picture. Draw a nose in the right spot");
+            await speechOut.Speak("Use the voice commands Mouth, Eye and line0 and see whats happening.");   
             lineDraw.canDraw = true;
-            await speechOut.Speak("Can you find your drawn nose? Say yes or done when you're ready.");
-            await speechIn.Listen(new Dictionary<string, KeyCode>() { { "yes", KeyCode.Y }});
+            await speechOut.Speak("Can you find your drawn nose? Say yes when you're ready.");
+            await WaitFunction(ready);
             lineDraw.canDraw = false;
             await lineDraw.TraceLine(lineDraw.lines["line"+(lineDraw.lineCount-1)]);
         }

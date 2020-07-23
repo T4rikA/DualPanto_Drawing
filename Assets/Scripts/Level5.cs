@@ -6,16 +6,17 @@ using System.Threading.Tasks;
 
 namespace PantoDrawing
 {   
-    public class Level5 : MonoBehaviour
+    public class Level5 : LevelMaster
     {
         // Start is called before the first frame update
-        public async Task StartLevel(LineDraw lineDraw, SpeechIn speechIn, SpeechOut speechOut)
+        public override async Task StartLevel(LineDraw lineDraw, SpeechIn speechIn, SpeechOut speechOut)
         {
             await speechOut.Speak("Now you have an empty paper, draw your own face. Feel free to use the options command for all tools.");
             lineDraw.canDraw = true;
-            await speechOut.Speak("Say yes or done when you're ready.");
-            await speechIn.Listen(new Dictionary<string, KeyCode>() { { "yes", KeyCode.Y }});
+            await speechOut.Speak("Say yes when you're ready.");
+            await WaitFunction(ready);
             lineDraw.canDraw = false;
+            speechOut.Speak("Congratulations! You completed your first own drawing!");
         }
     }
 }

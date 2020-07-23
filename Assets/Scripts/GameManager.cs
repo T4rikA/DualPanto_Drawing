@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Threading.Tasks;
@@ -16,32 +16,43 @@ namespace PantoDrawing
         LowerHandle lowerHandle;
         private SpeechIn speechIn;
         private SpeechOut speechOut;
-        int level = 1;
+        public int level;
+        public static LevelMaster levelMaster;
+        private static LineDraw lineDraw;
 
-        public Dictionary<string, KeyCode> commands = new Dictionary<string, KeyCode>() {
-            { "yes", KeyCode.Y },
-            { "no", KeyCode.N },
-            { "done", KeyCode.D },
-            { "circle", KeyCode.C }
+        GameObject level1;
+        GameObject level2;
+        GameObject level4;
+     
+        public Dictionary<string, System.Action> keywords = new Dictionary<string, System.Action>() {
+            { "circle", () => {
+                    lineDraw.CreateCircle();
+                }},
+            { "rectangle", () => {
+                    lineDraw.CreateRectangle();
+                }},
+            { "triangle", () => {
+                    lineDraw.CreateTriangle();
+                }},
+            { "yes", () => {
+                    levelMaster.ready = true;
+                }},
+            { "show all", () => {
+                    lineDraw.ShowLines();
+                }},
+            { "repeat" , () => {}},
+            { "options" , () => {}},
+            { "quit" , () => {}}
         };
-        
-        public bool doLevel = true;
-        public bool testing = true;
+
+        public bool levelMode;
 
         //public FirstLevel firstLevel; um die level ggf auszulagern in ein eigenes Skript aber das mag grad nciht
 
-        private LineDraw lineDraw;
-
         void Awake()
         {
-            speechIn = new SpeechIn(onRecognized, commands.Keys.ToArray());
+            speechIn = new SpeechIn(onRecognized, keywords.Keys.ToArray());
             speechOut = new SpeechOut();
-            /*if (level < 0 || level >= enemyConfigs.Length)
-            {
-                Debug.LogWarning($"Level value {level} < 0 or >= enemyConfigs.Length. Resetting to 0");
-                level = 0;
-            }*/
-            
         }
         
 
@@ -50,51 +61,66 @@ namespace PantoDrawing
             upperHandle = GetComponent<UpperHandle>();
             lowerHandle = GetComponent<LowerHandle>();
             lineDraw = GameObject.Find("Panto").GetComponent<LineDraw>();
-            lineDraw.canDraw = false;
             Debug.Log("Before Introduction");
-            speechIn.StartListening();
+            speechIn.StartListening(keywords.Keys.ToArray());
+
+
+            level1 = GameObject.Find("Level1");
+            level1.SetActive(false);
+
+            level2 = GameObject.Find("Level2");
+            level2.SetActive(false);
+
+            level4 = GameObject.Find("Level4");
+            level4.SetActive(false);
+            
             RegisterColliders();
-            level = SceneManager.GetActiveScene().buildIndex;
-            if(!testing)
+            if(levelMode)
             {
+                Debug.Log(levelMode);
                 Levels();
             } else
             {
-                Debug.Log("reload");
-                LoadScene(0);
                 lineDraw.canDraw = true;
             }
         }
 
-
         async void onRecognized(string message)
         {
-            //WIP
+            Debug.Log(message);
             switch (message)
             {
-                case "circle":
-                    Debug.Log("circle");
-                    lineDraw.CreateCircle();
-                    break;
                 case "repeat":
                     await speechOut.Repeat();
                     break;
                 case "quit":
                     await speechOut.Speak("Thanks for using our application. Closing down now...");
                     OnApplicationQuit();
+                    Debug.Log("test");
                     Application.Quit();
                     break;
-                case "done":
-                    lineDraw.canDraw = false;
-                    break;
-                /*case "options":
+                case "options":
                     string commandlist = "";
-                    foreach (string command in commands.Keys)
+                    foreach (KeyValuePair<string, System.Action> command in keywords)
                     {
-                        commandlist += command + ", ";
+                        commandlist += command.Key + ", ";
                     }
                     await speechOut.Speak("currently available commands: " + commandlist);
-                    break;*/
+                    break;
+                default:
+                    defaultSpeech(message);
+                    break;
+            }
+        }
+
+        private async void defaultSpeech(string text)
+        {
+            System.Action keywordAction;
+            // if the keyword recognized is in our dictionary, call that Action.
+            if (keywords.TryGetValue(text, out keywordAction))
+            {
+                keywordAction.Invoke();
+                await speechOut.Speak(text);
             }
         }
         
@@ -105,12 +131,12 @@ namespace PantoDrawing
         }
 
         
-        void RegisterColliders()
+        async void RegisterColliders()
         {
+            await Task.Delay(1000);
             PantoCollider[] colliders = FindObjectsOfType<PantoCollider>();
             foreach (PantoCollider collider in colliders)
             {
-                //Debug.Log(collider);
                 collider.CreateObstacle();
                 collider.Enable();
             }
@@ -121,80 +147,78 @@ namespace PantoDrawing
             switch(level)
             {
                 case 1:
-                    Level1 level1 = new Level1();
-                    await level1.StartLevel(lineDraw, speechIn, speechOut);
-                    LevelCompleted();
+                    Debug.Log("Starting Level1");
+                    level1.SetActive(true);
+                    levelMaster = (new GameObject("Level1")).AddComponent<Level1>();
+                    await levelMaster.StartLevel(lineDraw, speechIn, speechOut);
+                    level++;
+                    Levels();
                     break;
                 case 2:
-                    Level2 level2 = new Level2();
-                    await level2.StartLevel(lineDraw, speechIn, speechOut);
-                    LevelCompleted();
+                    level2.SetActive(true);
+                    levelMaster = (new GameObject("Level2")).AddComponent<Level2>();
+                    await levelMaster.StartLevel(lineDraw, speechIn, speechOut);
+                    level++;
+                    Levels();
                     break;
                 case 3:
-                    Level3 level3 = new Level3();
-                    await level3.StartLevel(lineDraw, speechIn, speechOut);
-                    LevelCompleted();
+                    levelMaster = (new GameObject("Level3")).AddComponent<Level3>();
+                    await levelMaster.StartLevel(lineDraw, speechIn, speechOut);
+                    level++;
+                    Levels();
                     break;
                 case 4:
-                    Level4 level4 = new Level4();
-                    await level4.StartLevel(lineDraw, speechIn, speechOut);
-                    LevelCompleted();
+                    level4.SetActive(true);
+                    levelMaster = (new GameObject("Level4")).AddComponent<Level4>();
+                    await levelMaster.StartLevel(lineDraw, speechIn, speechOut);
+                    level++;
+                    Levels();
                     break;
                 case 5:
-                    Level5 level5 = new Level5();
-                    await level5.StartLevel(lineDraw, speechIn, speechOut);
-                    LevelCompleted();
+                    ResetSpeech();
+                    level1.SetActive(false);
+                    level2.SetActive(false);
+                    level4.SetActive(false);
+                    lineDraw.ResetDrawingArea();
+                    levelMaster = (new GameObject("Level5")).AddComponent<Level5>();
+                    await levelMaster.StartLevel(lineDraw, speechIn, speechOut);
+                    level++;
+                    Levels();
+                    break;
+                case 6:
+                    ResetSpeech();
+                    lineDraw.ResetDrawingArea();
+                    levelMaster = (new GameObject("Level6")).AddComponent<Level6>();
+                    await levelMaster.StartLevel(lineDraw, speechIn, speechOut);
+                    level++;
+                    Levels();
                     break;
                 default:
+                    //TODO
                     Debug.Log("Default level case");
                     lineDraw.canDraw = true;
                     break;
             }
         }
-
-        public async void LevelCompleted()
+        void ResetSpeech()
         {
-            await speechOut.Speak("You completed the level");
-            LoadScene((level+1) % (SceneManager.sceneCountInBuildSettings));
+            keywords = new Dictionary<string, System.Action>() {
+            { "circle", () => {
+                    lineDraw.CreateCircle();
+                }},
+            { "yes", () => {
+                    levelMaster.ready = true;
+                }},
+            { "repeat" , () => {}},
+            { "options" , () => {}},
+            { "quit" , () => {}}
+            };
+            speechIn = new SpeechIn(onRecognized, keywords.Keys.ToArray());
         }
 
-        public void LoadScene(int index)
-        {
-            Debug.Log("Load scene with index: "+index);
-            SceneManager.LoadScene(index);
-        }
-
-        async void levelThree()
-        {
-            await speechOut.Speak("Using the voice command 'show' you can find other drawn objects. Use the command 'show eyes' and 'show mouth'.");
-
-            await speechOut.Speak("Draw a nose in the right spot. Turn the it-Handle to start you drawing. Name it also. Doing so you can create subdrawings.");   
-            
-            await speechOut.Speak("Say yes or done when you're ready.");
-            
-            //zeichnen bis drawing = false
-        }
-
-        void ResetGame()
-        {
-            level = 0;
-            LoadScene(level);
-        }
-
-        public void RestartLevel()
-        {
-            LoadScene(SceneManager.GetActiveScene().buildIndex);
-        }
-
-        async Task GameOver()
-        {
-            await speechOut.Speak("Thanks for using PantoDraw.");
-            Application.Quit();
+        public void AddVoiceCommand(string commandKey, System.Action command){
+            keywords.Add(commandKey, command);
+            speechIn.StartListening(keywords.Keys.ToArray());
         }
 }
-    /*void async levelFour(){return;}
-
-    void async levelFive(){return;}
-
-    void draw(){return;}*/
 }
