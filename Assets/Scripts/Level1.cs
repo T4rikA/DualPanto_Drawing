@@ -26,8 +26,8 @@ namespace PantoDrawing
             
             await speechOut.Speak("Here you can feel the first half of a mouth.");
             await lineDraw.TraceLine(mouth);
-            lineDraw.FindStartingPoint(mouth);
             await speechOut.Speak("Draw the second half. Turn the upper Handle to start drawing.");
+            lineDraw.FindStartingPoint(mouth);
             lineDraw.canDraw = true;
             await speechOut.Speak("Say yes when you're ready.");
             Debug.Log(drawn);

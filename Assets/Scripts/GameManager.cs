@@ -16,7 +16,7 @@ namespace PantoDrawing
         LowerHandle lowerHandle;
         private SpeechIn speechIn;
         private SpeechOut speechOut;
-        int level = 1;
+        int level = 6;
         public static LevelMaster levelMaster;
         private static LineDraw lineDraw;
 
@@ -28,15 +28,21 @@ namespace PantoDrawing
             { "circle", () => {
                     lineDraw.CreateCircle();
                 }},
+            { "rectangle", () => {
+                    lineDraw.CreateRectangle();
+                }},
             { "yes", () => {
                     levelMaster.ready = true;
+                }},
+            { "show all", () => {
+                    lineDraw.ShowLines();
                 }},
             { "repeat" , () => {}},
             { "options" , () => {}},
             { "quit" , () => {}}
         };
 
-        public bool levelMode = true;
+        public bool levelMode;
 
         //public FirstLevel firstLevel; um die level ggf auszulagern in ein eigenes Skript aber das mag grad nciht
 
@@ -66,7 +72,7 @@ namespace PantoDrawing
             level4.SetActive(false);
             
             RegisterColliders();
-            if(!levelMode)
+            if(levelMode)
             {
                 Debug.Log(levelMode);
                 Levels();
@@ -170,6 +176,13 @@ namespace PantoDrawing
                     level4.SetActive(false);
                     lineDraw.ResetDrawingArea();
                     levelMaster = (new GameObject("Level5")).AddComponent<Level5>();
+                    await levelMaster.StartLevel(lineDraw, speechIn, speechOut);
+                    level++;
+                    break;
+                case 6:
+                    ResetSpeech();
+                    lineDraw.ResetDrawingArea();
+                    levelMaster = (new GameObject("Level6")).AddComponent<Level6>();
                     await levelMaster.StartLevel(lineDraw, speechIn, speechOut);
                     level++;
                     break;

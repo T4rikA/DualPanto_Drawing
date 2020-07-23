@@ -39,7 +39,7 @@ namespace PantoDrawing
         {
             upperHandle = GameObject.Find("Panto").GetComponent<UpperHandle>();
             lowerHandle = GameObject.Find("Panto").GetComponent<LowerHandle>();
-            upperRotation = lowerHandle.GetRotation();
+            upperRotation = upperHandle.GetRotation();
             audio = GameObject.Find("Panto").GetComponent<Audio>();
         }
 
@@ -48,7 +48,7 @@ namespace PantoDrawing
         {
             if(!canDraw)
                 return;
-            angle = upperHandle.GetRotation() - upperRotation;
+            angle = Mathf.Abs(upperHandle.GetRotation() - upperRotation);
             angle = Mathf.Abs((angle + 180) % 360 - 180);
             if((angle > 80f  && !mouse && !drawing) || (Input.GetMouseButtonDown(0) && mouse)) 
             {
@@ -77,14 +77,13 @@ namespace PantoDrawing
                     lineRenderer.SetPositions(Curver.MakeSmoothCurve(linePos, .5f));
                     lines.Add(lineName, lineRenderer);
                     lineRenderer.name = lineName;
-                    GameObject.Find("Panto").GetComponent<GameManager>().AddVoiceCommand(lineName, () =>
+                    GameObject.Find("Panto").GetComponent<GameManager>().AddVoiceCommand( (lineCount+1)+"" , () =>
                     {
                         TraceLine(lines[lineName]);
                     });
                     lineCount++;
                     drawing = false;
                     audio.stopSound();
-                    GameManager.levelMaster.drawn = true;
                 }
             }
         }
@@ -103,11 +102,46 @@ namespace PantoDrawing
             return lineRenderer;
         }
 
-        public void CreateCircle(){
+        public void CreateCircle()
+        {
             LineRenderer line = lines["line"+(lineCount-1)];
             Vector3 center = GetCircleCenter(line);
             Vector3 radius = GetCircleRadius(line, center);
             CreateCirclePoints(line, center, (radius.x + radius.z) / 2);
+        }
+
+        public void CreateRectangle()
+        {
+            LineRenderer line = lines["line"+(lineCount-1)];
+            CreateRectanglePoints(line);
+        }
+
+        void CreateRectanglePoints(LineRenderer lineRenderer)
+        {
+            Vector3[] line = new Vector3[lineRenderer.positionCount];
+            lineRenderer.GetPositions(line);
+            float x_max = -10000, x_min = 10000, z_max = -10000, z_min = 10000;
+            for (int i = 0; i < lineRenderer.positionCount; i++)
+            {
+                if(line[i].x < x_min) x_min = line[i].x;
+                if(line[i].x > x_max) x_max = line[i].x;
+                if(line[i].z < z_min) z_min = line[i].z;
+                if(line[i].z > z_max) z_max = line[i].z;
+            }
+            Debug.Log(x_min+ " "+ x_max+ " "+ z_min+ " "+ z_max);
+            int count = lineRenderer.positionCount/4;
+            float x_step = (x_max-x_min)/(count);
+            float z_step = (z_max-z_min)/(count);
+            Vector3[] newPositions = new Vector3[count*4];
+            for (int i = 0; i < count; i++)
+            {
+                newPositions[i] = new Vector3(x_min+x_step*i,.1f,z_min);
+                newPositions[i + count] = new Vector3(x_max,.1f,z_min+z_step*i);
+                newPositions[i + 2 * count] = new Vector3(x_max-x_step*i,.1f,z_max);
+                newPositions[i + 3 * count] = new Vector3(x_min,.1f,z_max-z_step*i);
+            }
+            lineRenderer.positionCount = count*4;
+            lineRenderer.SetPositions(newPositions);   
         }
 
         void CreateCirclePoints (LineRenderer line, Vector3 center, float radius)
@@ -164,7 +198,7 @@ namespace PantoDrawing
         {
             Vector3[] linePos = new Vector3[line.positionCount];
             line.GetPositions(linePos);
-            for (int i = 0; i < line.positionCount; i += 8)
+            for (int i = 0; i < line.positionCount; i += 3)
             {
                 await lowerHandle.MoveToPosition(linePos[i], handleVelocity);
             }
@@ -178,7 +212,8 @@ namespace PantoDrawing
             await lowerHandle.MoveToPosition(linePos[0], handleVelocity);
         }
 
-        public async Task ShowLines(){
+        public async Task ShowLines()
+        {
             foreach (KeyValuePair<string, LineRenderer> line in lines)
             {
                 await TraceLine(line.Value);
