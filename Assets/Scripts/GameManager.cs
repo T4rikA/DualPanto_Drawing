@@ -16,7 +16,7 @@ namespace PantoDrawing
         LowerHandle lowerHandle;
         private SpeechIn speechIn;
         private SpeechOut speechOut;
-        int level = 6;
+        public int level;
         public static LevelMaster levelMaster;
         private static LineDraw lineDraw;
 
@@ -30,6 +30,9 @@ namespace PantoDrawing
                 }},
             { "rectangle", () => {
                     lineDraw.CreateRectangle();
+                }},
+            { "triangle", () => {
+                    lineDraw.CreateTriangle();
                 }},
             { "yes", () => {
                     levelMaster.ready = true;
