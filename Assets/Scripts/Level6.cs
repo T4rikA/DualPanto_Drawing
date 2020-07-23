@@ -12,7 +12,6 @@ namespace PantoDrawing
         public override async Task StartLevel(LineDraw lineDraw, SpeechIn speechIn, SpeechOut speechOut)
         {
             await speechOut.Speak("Turn the upper handle to start drawing, use the options command for all available functions. After drawing a line you can find it too.");
-            
         }
     }
 }

@@ -16,7 +16,7 @@ namespace PantoDrawing
             Debug.Log(drawn);
             await WaitFunction(ready);
             Debug.Log(drawn);
-            await speechOut.Speak("Introduction finished, start level one.");
+            await speechOut.Speak("Lets make your first drawing.");
 
             LineRenderer mouth = GameObject.Find("Mouth").GetComponent<LineRenderer>();
             GameObject.Find("Panto").GetComponent<GameManager>().AddVoiceCommand("Mouth", () =>

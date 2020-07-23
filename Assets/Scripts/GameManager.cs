@@ -96,6 +96,7 @@ namespace PantoDrawing
                 case "quit":
                     await speechOut.Speak("Thanks for using our application. Closing down now...");
                     OnApplicationQuit();
+                    Debug.Log("test");
                     Application.Quit();
                     break;
                 case "options":
@@ -112,13 +113,14 @@ namespace PantoDrawing
             }
         }
 
-        private void defaultSpeech(string text)
+        private async void defaultSpeech(string text)
         {
             System.Action keywordAction;
             // if the keyword recognized is in our dictionary, call that Action.
             if (keywords.TryGetValue(text, out keywordAction))
             {
                 keywordAction.Invoke();
+                await speechOut.Speak(text);
             }
         }
         
@@ -181,6 +183,7 @@ namespace PantoDrawing
                     levelMaster = (new GameObject("Level5")).AddComponent<Level5>();
                     await levelMaster.StartLevel(lineDraw, speechIn, speechOut);
                     level++;
+                    Levels();
                     break;
                 case 6:
                     ResetSpeech();
@@ -188,6 +191,7 @@ namespace PantoDrawing
                     levelMaster = (new GameObject("Level6")).AddComponent<Level6>();
                     await levelMaster.StartLevel(lineDraw, speechIn, speechOut);
                     level++;
+                    Levels();
                     break;
                 default:
                     //TODO
@@ -215,16 +219,6 @@ namespace PantoDrawing
         public void AddVoiceCommand(string commandKey, System.Action command){
             keywords.Add(commandKey, command);
             speechIn.StartListening(keywords.Keys.ToArray());
-        }
-
-        void ResetGame()
-        {
-            //TODO
-        }
-
-        public void RestartLevel()
-        {
-            //TODO
         }
 }
 }

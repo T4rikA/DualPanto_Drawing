@@ -22,6 +22,7 @@ namespace PantoDrawing
             await speechOut.Speak("Say yes when you're ready.");
             await WaitFunction(ready);
             lineDraw.canDraw = false;
+            await speechOut.Speak("Congrats you just drew a face!");
         }
     }
 }

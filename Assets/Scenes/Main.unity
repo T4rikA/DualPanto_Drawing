@@ -491,8 +491,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3cb918405bf82d84ebf702c77ac4241e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  level: 6
-  levelMode: 1
+  level: 1
+  levelMode: 0
 --- !u!82 &592711449
 AudioSource:
   m_ObjectHideFlags: 0
