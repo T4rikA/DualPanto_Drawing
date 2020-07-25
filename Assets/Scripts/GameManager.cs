@@ -11,10 +11,9 @@ namespace PantoDrawing
 {
     public class GameManager : MonoBehaviour
     {
-        static GameManager instance;
         UpperHandle upperHandle;
         LowerHandle lowerHandle;
-        private SpeechIn speechIn;
+        public SpeechIn speechIn;
         private SpeechOut speechOut;
         public int level;
         public static LevelMaster levelMaster;
@@ -33,6 +32,9 @@ namespace PantoDrawing
                 }},
             { "triangle", () => {
                     lineDraw.CreateTriangle();
+                }},
+            { "undo", () => {
+                    lineDraw.UndoLine();
                 }},
             { "yes", () => {
                     levelMaster.ready = true;
@@ -85,7 +87,7 @@ namespace PantoDrawing
             }
         }
 
-        async void onRecognized(string message)
+        public async void onRecognized(string message)
         {
             Debug.Log(message);
             switch (message)
@@ -212,6 +214,9 @@ namespace PantoDrawing
             { "triangle", () => {
                     lineDraw.CreateTriangle();
                 }},
+            { "undo", () => {
+                    lineDraw.UndoLine();
+                }},
             { "yes", () => {
                     levelMaster.ready = true;
                 }},
@@ -221,8 +226,8 @@ namespace PantoDrawing
             { "repeat" , () => {}},
             { "options" , () => {}},
             { "quit" , () => {}}
-        };
-            speechIn = new SpeechIn(onRecognized, keywords.Keys.ToArray());
+        };            
+        speechIn = new SpeechIn(onRecognized, keywords.Keys.ToArray());
         }
 
         public void AddVoiceCommand(string commandKey, System.Action command){
